@@ -1,0 +1,74 @@
+header, header.container .row, nav {
+  background-color: #0380dd !important;
+  height: 90px;
+}
+ul li a, .dropdown li {
+  text-decoration: none;
+  color: #FFF !important;
+  font-size: 30px;
+  font-weight: bold;
+}
+ul li.active a, .dropdown li.active {
+  color: #0380dd !important;
+}
+ul li.cep {
+  width: 17%;
+}
+ul li {
+  width: 22.5%;
+  padding: .5%;
+  text-align: center;
+  border-radius: 10px 10px 0px 0px;
+  position: relative;
+  -webkit-border-radius: 10px 10px 0px 0px;
+  -moz-border-radius: 10px 10px 0px 0px;
+  -ms-border-radius: 10px 10px 0px 0px;
+  -o-border-radius: 10px 10px 0px 0px;
+}
+.dropdown li,
+ul.dropdown-menu {
+  width: 100%;
+  border: 0;
+}
+ul.dropdown-menu li a {
+  color: #0380dd !important;
+  transition: all .5s ease-out;
+  -webkit-transition: all .5s ease-out;
+  -moz-transition: all .5s ease-out;
+  -ms-transition: all .5s ease-out;
+  -o-transition: all .5s ease-out;
+}
+ul.dropdown-menu li a:hover {
+  background-color: #0380dd !important;
+  color: #FFF !important;
+}
+ul li::before {
+  width: 0%;
+  position: absolute;
+  top: auto;
+  right: 2.2%;
+  bottom: 0%;
+  height: 5px;
+  background-color: #fff !important;
+  transition: all 500ms ease-in;
+  content: "";
+  -webkit-transition: all 500ms ease-in;
+  -moz-transition: all 500ms ease-in;
+  -ms-transition: all 500ms ease-in;
+  -o-transition: all 500ms ease-in;
+}
+ul li.active {
+  background-color: #FFF !important;
+  border-radius: 10px !important;
+  -webkit-border-radius: 10px !important;
+  -moz-border-radius: 10px !important;
+  -ms-border-radius: 10px !important;
+  -o-border-radius: 10px !important;
+  box-shadow: 0 0 5px 1px #FFF !important;
+}
+ul li.active::before {
+  background-color: #0380dd !important;
+}
+ul li:hover::before {
+  width: 95% !important;
+}

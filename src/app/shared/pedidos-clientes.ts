@@ -1,0 +1,35 @@
+export interface PedidosClientes {
+  id: number;
+  data: string;
+  numberPedido: number;
+  cliente: string;
+  telefone: string;
+  cep: string;
+  cidade: string;
+  rua: string;
+  numCasa: string;
+  bairro: string;
+  complemento: string
+  quantidade: string;
+  descricao: string;
+  total: string;
+  quantidade1: string;
+  descricao1: string;
+  total1: string;
+  quantidade2: string;
+  descricao2: string;
+  total2: string;
+  quantidade3: string;
+  descricao3: string;
+  total3: string;
+  quantidade4: string;
+  descricao4: string;
+  total4: string;
+  quantidade5: string;
+  descricao5: string;
+  total5: string;
+  valorFinal: string;
+  pedidoRegistrado: boolean;
+  pedidoPago: boolean;
+  pedidoRetirado: boolean;
+}

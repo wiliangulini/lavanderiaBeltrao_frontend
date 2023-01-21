@@ -1,0 +1,75 @@
+
+<main class="mt-5 mb-5">
+  <div class="container">
+    <div class="row">
+      <div class="title">
+        <h1>Buscar CEP pelo nome da rua</h1>
+      </div>
+    </div>
+  </div>
+  <form class="was-validated container" novalidate [formGroup]="formulario">
+
+    <div class="form-group row mb-3">
+        <label for="rua" class="form-label">Rua</label>
+        <input
+          required
+          type="text"
+          class="form-control"
+          id="rua"
+          placeholder="Rua"
+          formControlName="rua"
+          [ngClass]="aplicaCssErro('rua')"
+          (blur)="consultarRua()"
+        >
+        <app-error-msg [control]="$any(formulario).get('rua')" label="Rua"></app-error-msg>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <!-- <th scope="col">#</th> -->
+          <th scope="col">CEP</th>
+          <th scope="col">Bairro</th>
+          <th scope="col">Cidade</th>
+          <th scope="col">Complemento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <!-- <th scope="row">1</th> -->
+          <td>
+            <ul class="d-flex flex-column">
+              <li *ngFor="let cep of arrCep">
+                {{cep}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul class="d-flex flex-column">
+              <li *ngFor="let bairro of arrBairro">
+                {{bairro}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul class="d-flex flex-column">
+              <li *ngFor="let city of arrCidade">
+                {{city}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <ul class="d-flex flex-column">
+              <li *ngFor="let comp of arrComp">
+                {{comp}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br><br>
+    <button (click)="resetar()" class="btn btn-secondary ms-2">Cancelar</button>
+  </form>
+</main>

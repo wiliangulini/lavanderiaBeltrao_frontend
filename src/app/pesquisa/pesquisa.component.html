@@ -1,0 +1,52 @@
+<div class="main mt-5 mb-5">
+  <div class="container">
+    <div class="row">
+      <form class="d-flex flex-column align-items-center justify-content-center needs-validation" novalidate [formGroup]="formulario" >
+        <div class="row w-100 justify-content-between mt-5 mb-3">
+          <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9 ps-0">
+            <label for="search" class="form-label">Pesquisar Pedido <small>(Nome Cliente / Número Pedido)</small></label>
+            <input id="pesquisa" class="form-control" type="text" formControlName="search" placeholder="Pesquisar Pedido">
+          </div>
+          <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 pe-0 d-flex align-items-end">
+            <button class="btn btn-outline-success w-100 d-flex justify-content-center align-items-center" (click)="searchPedido()">Pesquisar Pedido<mat-icon class="ms-2">search</mat-icon></button>
+          </div>
+        </div>
+        <div class="row w-100">
+          <div class="card">
+            <table class="table form-group">
+              <thead>
+              <tr>
+                <th scope="col">Cliente</th>
+                <th scope="col">Número do Pedido</th>
+                <th scope="col">Total</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Deletar</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="mb-3" *ngFor="let pedidos of arrPedidos">
+                <td>
+                  {{ pedidos.cliente }}
+                </td>
+                <td>
+                  {{ pedidos.numberPedido }}
+                </td>
+                <td>
+                  {{ pedidos.valorFinal }}
+                </td>
+                <td>
+                  <a class="btn btn-primary w-100" (click)="onEdit(pedidos.id)">Editar</a>
+                </td>
+                <td>
+                  <a class="btn btn-primary w-100" (click)="onRemove(pedidos.id)">Deletar</a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <app-formulario [pedidosClientes]="pedidosClientes" class="w-100"></app-formulario>
+      </form>
+    </div>
+  </div>
+</div>

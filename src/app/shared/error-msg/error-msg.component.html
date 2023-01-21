@@ -1,0 +1,7 @@
+<div *ngIf="errorMessage != null"
+  [ngClass]="aplicaCssErro(nome)"
+  class="alert alert-danger"
+  role="alert"
+>
+  {{ errorMessage }}
+</div>

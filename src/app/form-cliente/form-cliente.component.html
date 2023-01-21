@@ -1,0 +1,126 @@
+<form class="was-validated container" novalidate [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <div class="form-group row mb-3">
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+      <label for="cliente" class="form-label">Cliente</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="cliente"
+        placeholder="Cliente"
+        formControlName="cliente"
+        [(ngModel)]="clientes.cliente"
+        [ngClass]="aplicaCssErro('cliente')"
+      >
+      <app-error-msg [control]="$any(formulario).get('cliente')" label="Cliente"></app-error-msg>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 ">
+      <label for="telefone" class="form-label">Telefone</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        placeholder="Telefone"
+        formControlName="telefone"
+        [(ngModel)]="clientes.telefone"
+        [ngClass]="aplicaCssErro('telefone')"
+      >
+      <app-error-msg [control]="$any(formulario).get('telefone')" label="Telefone"></app-error-msg>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+      <label for="cep" class="form-label">CEP</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="cep"
+        placeholder="Cep"
+        formControlName="cep"
+        [(ngModel)]="clientes.cep"
+        [ngClass]="aplicaCssErro('cep')"
+        (blur)="consultarCep($event)"
+      >
+      <app-error-msg [control]="$any(formulario).get('cep')" label="CEP"></app-error-msg>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 ">
+      <label for="cidade" class="form-label ps-3">Cidade</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="cidade"
+        placeholder="Cidade"
+        formControlName="cidade"
+        [(ngModel)]="clientes.cidade"
+        [ngClass]="aplicaCssErro('cidade')"
+      >
+      <app-error-msg [control]="$any(formulario).get('cidade')" label="Cidade"></app-error-msg>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+      <label for="rua" class="form-label">Rua</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="rua"
+        placeholder="Rua"
+        formControlName="rua"
+        [(ngModel)]="clientes.rua"
+        [ngClass]="aplicaCssErro('rua')"
+      >
+      <app-error-msg [control]="$any(formulario).get('rua')" label="Rua"></app-error-msg>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
+      <label for="numCasa" class="form-label ps-3">Número Casa/Apartamento</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        placeholder="1001"
+        id="numCasa"
+        formControlName="numCasa"
+        [(ngModel)]="clientes.numCasa"
+        [ngClass]="aplicaCssErro('numCasa')"
+      >
+      <app-error-msg [control]="$any(formulario).get('numCasa')" label="Número Casa/Apartamento"></app-error-msg>
+    </div>
+  </div>
+  <div class="form-group row mb-3">
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+      <label for="bairro" class="form-label">Bairro</label>
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="bairro"
+        placeholder="Bairro"
+        formControlName="bairro"
+        [(ngModel)]="clientes.bairro"
+        [ngClass]="aplicaCssErro('bairro')"
+      >
+      <app-error-msg [control]="$any(formulario).get('bairro')" label="Bairro"></app-error-msg>
+    </div>
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 ">
+      <label for="complemento" class="form-label">Complemento</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Complemento"
+        formControlName="complemento"
+        [(ngModel)]="clientes.complemento"
+      >
+    </div>
+  </div>
+
+  <br><br>
+  <div class="row justify-content-end">
+    <div class="buttons d-flex justify-content-end align-items-center">
+      <button class="btn btn-primary w-25" type="submit">Salvar</button>
+      <button (click)="resetar()" class="btn btn-secondary w-25 ms-2">Cancelar</button>
+    </div>
+  </div>
+</form>

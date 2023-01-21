@@ -1,0 +1,53 @@
+<main class="mt-5 mb-5">
+  <div class="container">
+    <div class="row">
+      <div class="title">
+        <h1>Editar Clientes</h1>
+      </div>
+    </div>
+  </div>
+  <form class="was-validated container" novalidate [formGroup]="formulario">
+    <div class="row w-100 justify-content-between mt-5 mb-3">
+      <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9">
+        <label for="cliente" class="form-label">Pesquisar Cliente</label>
+        <input class="form-control" type="search" formControlName="search" placeholder="Pesquisar Cliente" aria-label="Search">
+      </div>
+      <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 d-flex align-items-end">
+        <button class="btn btn-outline-success w-100 d-flex justify-content-center align-items-center" (click)="searchCliente()">Pesquisar Cliente<mat-icon class="ms-2">search</mat-icon></button>
+      </div>
+    </div>
+    <div class="card">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Cliente</th>
+            <th scope="col">Rua</th>
+            <th scope="col">Bairro</th>
+            <th scope="col">Editar</th>
+            <th scope="col">Deletar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="mb-3" *ngFor="let cliente of arrClientes">
+            <td>
+              {{ cliente.cliente }}
+            </td>
+            <td>
+              {{ cliente.rua }}
+            </td>
+            <td>
+              {{ cliente.bairro }}
+            </td>
+            <td>
+              <a class="btn btn-primary w-100" (click)="onEdit(cliente.id)">Editar</a>
+            </td>
+            <td>
+              <a class="btn btn-primary w-100" (click)="onRemove(cliente.id)">Deletar</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <app-form-cliente [clientes]="clientes"></app-form-cliente>
+  </form>
+</main>

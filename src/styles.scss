@@ -1,0 +1,47 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: #1b1e1f !important;
+}
+.w-90 {
+  width: 90% !important;
+}
+.form-control {
+  border-width: 2.5px !important;
+  border-radius: 8px !important;
+  font-size: 20px !important;
+}
+.form-label {
+  color: #FFF;
+  font-size: 23px;
+}
+td.second {
+  padding: 0 1rem 0 1rem !important;
+}
+td.first, td.last {
+  padding: 0 !important;
+}
+.table > :not(caption) > * > * {
+  border: 0 !important;
+}
+tr th {
+  color: #FFF;
+  font-size: 23px;
+  font-weight: bold;
+}
+h1 {
+  color: #FFF;
+  font-weight: bold !important;
+  text-align: center;
+  margin-bottom: 2% !important;
+}
+input {
+  height: 50px;
+}
+.mat-snack-bar-container {
+  background-color: #0380dd !important;
+}
+.mat-simple-snackbar {
+  justify-content: center !important;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

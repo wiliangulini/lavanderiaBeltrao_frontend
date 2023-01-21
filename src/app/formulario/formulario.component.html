@@ -1,0 +1,473 @@
+<form class="was-validated container p-0 m-0" novalidate [formGroup]="formulario" (ngSubmit)="onSubmit()">
+<div class="form-group row mb-3">
+  <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
+    <label class="form-label">Cliente</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      placeholder="Cliente"
+      formControlName="cliente"
+      [(ngModel)]="pedidosClientes.cliente"
+      [ngClass]="aplicaCssErro('cliente')"
+      (blur)="consultarCliente($event)"
+    >
+    <app-error-msg [control]="$any(formulario).get('cliente')" label="Cliente"></app-error-msg>
+  </div>
+  <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5 ">
+    <label for="telefone" class="form-label">Telefone</label>
+    <input
+      required
+      id="telefone"
+      type="number"
+      class="form-control"
+      placeholder="Telefone"
+      formControlName="telefone"
+      [(ngModel)]="pedidosClientes.telefone"
+      [ngClass]="aplicaCssErro('telefone')"
+    >
+    <app-error-msg [control]="$any(formulario).get('telefone')" label="Telefone"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3">
+  <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+    <label for="data" class="form-label ">Data</label>
+    <input
+      required
+      type="date"
+      class="form-control"
+      id="data"
+      placeholder="Data"
+      formControlName="data"
+      [(ngModel)]="pedidosClientes.data"
+      [ngClass]="aplicaCssErro('data')"
+    >
+    <app-error-msg [control]="$any(formulario).get('data')" label="Data"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
+    <label for="numberPedido" class="form-label ">Número Pedido</label>
+    <input
+      id="numberPedido"
+      type="text"
+      class="form-control in-valid"
+      [ngModel]="pedidosClientes.numberPedido"
+      formControlName="numberPedido"
+      readonly
+    >
+  </div>
+</div>
+<div class="form-group row mb-3">
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+    <label for="cep" class="form-label">CEP</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="cep"
+      placeholder="Cep"
+      formControlName="cep"
+      [(ngModel)]="pedidosClientes.cep"
+      [ngClass]="aplicaCssErro('cep')"
+      (blur)="consultarCep($event)"
+    >
+    <app-error-msg [control]="$any(formulario).get('cep')" label="CEP"></app-error-msg>
+  </div>
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 ">
+    <label for="cidade" class="form-label ">Cidade</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="cidade"
+      placeholder="Cidade"
+      formControlName="cidade"
+      [(ngModel)]="pedidosClientes.cidade"
+      [ngClass]="aplicaCssErro('cidade')"
+    >
+    <app-error-msg [control]="$any(formulario).get('cidade')" label="Cidade"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3">
+  <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8">
+    <label for="rua" class="form-label">Rua</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="rua"
+      placeholder="Rua"
+      formControlName="rua"
+      [(ngModel)]="pedidosClientes.rua"
+      [ngClass]="aplicaCssErro('rua')"
+    >
+    <app-error-msg [control]="$any(formulario).get('rua')" label="Rua"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 ">
+    <label for="numCasa" class="form-label ">Número Casa/Apartamento</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      placeholder="1001"
+      id="numCasa"
+      formControlName="numCasa"
+      [(ngModel)]="pedidosClientes.numCasa"
+      [ngClass]="aplicaCssErro('numCasa')"
+    >
+    <app-error-msg [control]="$any(formulario).get('numCasa')" label="Número Casa/Apartamento"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3">
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+    <label for="bairro" class="form-label">Bairro</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="bairro"
+      placeholder="Bairro"
+      formControlName="bairro"
+      [(ngModel)]="pedidosClientes.bairro"
+      [ngClass]="aplicaCssErro('bairro')"
+    >
+    <app-error-msg [control]="$any(formulario).get('bairro')" label="Bairro"></app-error-msg>
+  </div>
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 ">
+    <label for="complemento" class="form-label">Complemento</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Complemento"
+      formControlName="complemento"
+      [(ngModel)]="pedidosClientes.complemento"
+    >
+  </div>
+</div>
+<div class="form-group row mb-3 product">
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade" class="form-label">Quantidade</label>
+    <input
+      required
+      type="number"
+      class="form-control"
+      id="quantidade"
+      placeholder="Quantidade"
+      formControlName="quantidade"
+      [(ngModel)]="pedidosClientes.quantidade"
+      [ngClass]="aplicaCssErro('quantidade')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade')" label="Quantidade"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao" class="form-label">Descrição</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="descricao"
+      placeholder="Descrição"
+      formControlName="descricao"
+      [(ngModel)]="pedidosClientes.descricao"
+      [ngClass]="aplicaCssErro('descricao')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao')" label="Descrição"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total" class="form-label">Total</label>
+    <input
+      required
+      type="text"
+      class="form-control"
+      id="total"
+      placeholder="Total"
+      formControlName="total"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total"
+      [ngClass]="aplicaCssErro('total')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total')" label="Total"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3 product product1 remove">
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade1" class="form-label">Quantidade</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantidade1"
+      placeholder="Quantidade"
+      formControlName="quantidade1"
+      [(ngModel)]="pedidosClientes.quantidade1"
+      [ngClass]="aplicaCssErro('quantidade1')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade1')" label="Quantidade1"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao1" class="form-label">Descrição</label>
+    <input
+      type="text"
+      class="form-control"
+      id="descricao1"
+      placeholder="Descrição"
+      formControlName="descricao1"
+      [(ngModel)]="pedidosClientes.descricao1"
+      [ngClass]="aplicaCssErro('descricao1')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao1')" label="Descrição1"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total1" class="form-label ">Total</label>
+    <input
+      type="text"
+      class="form-control"
+      id="total1"
+      placeholder="Total"
+      formControlName="total1"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total1"
+      [ngClass]="aplicaCssErro('total1')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total1')" label="Total1"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3 product product2 remove">
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade2" class="form-label">Quantidade</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantidade2"
+      placeholder="Quantidade"
+      formControlName="quantidade2"
+      [(ngModel)]="pedidosClientes.quantidade2"
+      [ngClass]="aplicaCssErro('quantidade2')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade2')" label="Quantidade2"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao2" class="form-label">Descrição</label>
+    <input
+      type="text"
+      class="form-control"
+      id="descricao2"
+      placeholder="Descrição"
+      formControlName="descricao2"
+      [(ngModel)]="pedidosClientes.descricao2"
+      [ngClass]="aplicaCssErro('descricao2')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao2')" label="Descrição2"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total2" class="form-label ">Total</label>
+    <input
+      type="text"
+      class="form-control"
+      id="total2"
+      placeholder="Total"
+      formControlName="total2"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total2"
+      [ngClass]="aplicaCssErro('total2')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total2')" label="Total2"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3 product product3 remove">
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade3" class="form-label">Quantidade</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantidade3"
+      placeholder="Quantidade"
+      formControlName="quantidade3"
+      [(ngModel)]="pedidosClientes.quantidade3"
+      [ngClass]="aplicaCssErro('quantidade3')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade3')" label="Quantidade3"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao3" class="form-label">Descrição</label>
+    <input
+      type="text"
+      class="form-control"
+      id="descricao3"
+      placeholder="Descrição"
+      formControlName="descricao3"
+      [(ngModel)]="pedidosClientes.descricao3"
+      [ngClass]="aplicaCssErro('descricao3')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao3')" label="Descrição3"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total3" class="form-label ">Total</label>
+    <input
+      type="text"
+      class="form-control"
+      id="total3"
+      placeholder="Total"
+      formControlName="total3"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total3"
+      [ngClass]="aplicaCssErro('total3')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total3')" label="Total3"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3 product product4 remove" >
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade4" class="form-label">Quantidade</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantidade4"
+      placeholder="Quantidade"
+      formControlName="quantidade4"
+      [(ngModel)]="pedidosClientes.quantidade4"
+      [ngClass]="aplicaCssErro('quantidade4')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade4')" label="Quantidade4"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao4" class="form-label">Descrição</label>
+    <input
+      type="text"
+      class="form-control"
+      id="descricao4"
+      placeholder="Descrição"
+      formControlName="descricao4"
+      [(ngModel)]="pedidosClientes.descricao4"
+      [ngClass]="aplicaCssErro('descricao4')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao4')" label="Descrição4"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total4" class="form-label ">Total</label>
+    <input
+      type="text"
+      class="form-control"
+      id="total4"
+      placeholder="Total"
+      formControlName="total4"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total4"
+      [ngClass]="aplicaCssErro('total4')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total4')" label="Total4"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row mb-3 product product5 remove" >
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="quantidade5" class="form-label">Quantidade</label>
+    <input
+      type="number"
+      class="form-control"
+      id="quantidade5"
+      placeholder="Quantidade"
+      formControlName="quantidade5"
+      [(ngModel)]="pedidosClientes.quantidade5"
+      [ngClass]="aplicaCssErro('quantidade5')"
+    >
+    <app-error-msg [control]="$any(formulario).get('quantidade5')" label="Quantidade5"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="descricao5" class="form-label">Descrição</label>
+    <input
+      type="text"
+      class="form-control"
+      id="descricao5"
+      placeholder="Descrição"
+      formControlName="descricao5"
+      [(ngModel)]="pedidosClientes.descricao5"
+      [ngClass]="aplicaCssErro('descricao5')"
+    >
+    <app-error-msg [control]="$any(formulario).get('descricao5')" label="Descrição5"></app-error-msg>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
+    <label for="total5" class="form-label ">Total</label>
+    <input
+      type="text"
+      class="form-control"
+      id="total5"
+      placeholder="Total"
+      formControlName="total5"
+      (change)="onChange()"
+      (keyup)="formatarMoeda($event)"
+      [(ngModel)]="pedidosClientes.total5"
+      [ngClass]="aplicaCssErro('total5')"
+    >
+    <app-error-msg [control]="$any(formulario).get('total5')" label="Total5"></app-error-msg>
+  </div>
+</div>
+<div class="form-group row justify-content-end mb-3 product" >
+  <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
+    <label for="valorFinal" class="form-label">Valor Final</label>
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Valor Final"
+      formControlName="valorFinal"
+      readonly
+      [(ngModel)]="pedidosClientes.valorFinal"
+    >
+  </div>
+  <div class="miniTable col-sm-2 col-md-2 col-lg-2 col-xl-2">
+    <div class="colunaHead w-100">Novo Campo</div>
+    <div class="actions d-flex justify-content-around align-items-center w-100">
+      <a (click)="novoCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon>add</mat-icon></a>
+      <a (click)="removeCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon>delete</mat-icon></a>
+    </div>
+  </div>
+  <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 d-flex flex-column align-items-center justify-content-between">
+    <label class="colunaHead w-100">Pedido Status</label>
+    <div class="row justify-content-around align-item-center w-100">
+      <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="pedidoRegistrado"
+          formControlName="pedidoRegistrado"
+          [ngClass]="aplicaCssErro('pedidoRegistrado')"
+          [(ngModel)]="pedidosClientes.pedidoRegistrado"
+        >
+        <label class="form-check-label ms-2" for="pedidoRegistrado">Pedido Registrado</label>
+      </div>
+      <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="pedidoPago"
+          formControlName="pedidoPago"
+          [ngClass]="aplicaCssErro('pedidoPago')"
+          [(ngModel)]="pedidosClientes.pedidoPago"
+        >
+        <label class="form-check-label ms-2" for="pedidoPago">Pedido Pago</label>
+      </div>
+    </div>
+    <div class="row justify-content-around align-item-center w-100 mt-2">
+      <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="pedidoRetirado"
+          formControlName="pedidoRetirado"
+          [ngClass]="aplicaCssErro('pedidoRetirado')"
+          [(ngModel)]="pedidosClientes.pedidoRetirado"
+        >
+        <label class="form-check-label ms-2" for="pedidoRetirado">Pedido Retirado</label>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row justify-content-end mt-5">
+  <button class="btn btn-primary" type="submit" >Salvar</button>
+  <button (click)="resetar()" class="btn btn-secondary ms-3">Cancelar</button>
+  <a class="btn ms-3 btn-whats" target="_blank" (click)="enviarPedidoCliente(pedidosClientes)" ><svg fill="#FFF" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg></a>
+</div>
+</form>

@@ -1,0 +1,32 @@
+<header>
+  <div class="container-fluid ps-5 pe-5">
+    <div class="row ps-5 pe-5">
+      <nav class="navbar navbar-expand-lg p-0">
+        <div class="container-fluid h-100 ps-5 pe-5">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse h-100" id="navbarNav">
+            <ul class="navbar-nav w-100 h-100 justify-content-around align-items-center">
+              <li routerLinkActive="active" class="nav-item">
+                <a [routerLink]="['/registrar-pedido']" #resPed class="nav-link active" aria-current="page" href="#" (click)="edit()">Registrar Pedido</a>
+              </li>
+              <li routerLinkActive="active" class="nav-item">
+                <a [routerLink]="['/pesquisar-pedido']" class="nav-link" href="#">Pesquisar Pedido</a>
+              </li>
+              <li routerLinkActive="active" class="nav-item">
+                <a [routerLink]="['/cadastrar-clientes']" class="nav-link" href="#" >Cadastrar Clientes</a>
+              </li>
+              <li routerLinkActive="active" class="nav-item">
+                <a [routerLink]="['/editar-clientes']" class="nav-link" href="#">Editar Clientes</a>
+              </li>
+              <li routerLinkActive="active" class="nav-item cep">
+                <a [routerLink]="['/buscar-cep']" class="nav-link" href="#">Buscar Cep</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>

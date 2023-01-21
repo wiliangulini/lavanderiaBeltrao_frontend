@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "lavanderia-e5a18": {
+      "hosting": {
+        "lavanderia": [
+          "lavanderia-e5a18"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "lavanderia-e5a18"
+  }
+}
