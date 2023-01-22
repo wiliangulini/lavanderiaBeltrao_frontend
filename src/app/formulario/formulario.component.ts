@@ -112,11 +112,15 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       data.forEach((e: any) => {
         num.push(e.numberPedido)
       });
-      num = num.sort((a: any, b: any) => a - b)
-      this.np = num.pop();
-      this.np++;
+      if(num.length == 0) {
+        this.np = 1;
+      } else {
+        num = num.sort((a: any, b: any) => a - b)
+        this.np = num.pop();
+        this.np++;
+      }
       this.formulario.get('numberPedido')?.setValue(this.np);
-    })
+    });
   }
 
   searchPedido() {
@@ -285,10 +289,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     test?.classList.add('remove');
     if(this.i <= 5 && this.i >= 2) {
       this.i--;
-    } else {
-      this._snackBar.open('TODOS OS CAMPOS FORAM REMOVIDOS!!!', '', {duration: 5000});
     }
-    console.log(e)
   }
 
   enviarPedidoCliente(pedido: any) {
