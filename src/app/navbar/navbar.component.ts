@@ -15,10 +15,6 @@ export class NavbarComponent implements OnInit {
   edit(): void {
     if (this.control.nativeElement.className == "nav-link active") {
       setTimeout(() => window.location.reload(), 500);
-      console.log('numberPedido')
     }
-
   }
-
-
 }

@@ -20,21 +20,16 @@ export class ConsultaCepService {
 
       //Valida o formato do CEP.
       if(validacep.test(cep)) {
-
         return this.http.get(`//viacep.com.br/ws/${cep}/json`);
       }
     }
-
     return of({})
   }
 
   consultaRUA(rua: string) {
-    //console.log(rua);
-
     if(rua != '') {
       return this.http.get(`//viacep.com.br/ws/PR/Francisco Beltrão/${rua}/json/`);
     }
-
     return of({});
   }
 }

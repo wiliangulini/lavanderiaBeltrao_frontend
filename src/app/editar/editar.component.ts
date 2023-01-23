@@ -45,7 +45,6 @@ export class EditarComponent implements OnInit {
           return this.arrClientes.push(e)
         }
       });
-      console.log(this.arrClientes)
     })
   }
 
@@ -54,8 +53,11 @@ export class EditarComponent implements OnInit {
   }
 
   onRemove(id: any) {
-    console.log(id);
-    this.crudService.removeClient(id).subscribe((data: any) => console.log(data))
+    this.crudService.removeClient(id).subscribe(() => {
+      this._snackBar.open('CLIENTE REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
+      this.formulario.get('search');
+      this.searchCliente();
+    })
   }
 
 }

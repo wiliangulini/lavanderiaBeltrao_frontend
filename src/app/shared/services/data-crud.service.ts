@@ -11,8 +11,8 @@ import { PedidosClientes } from '../pedidos-clientes';
 })
 export class DataCrudService {
 
-  private readonly pedidosAPI = `${environment.API}pedidos`;
-  private readonly clientesAPI = `${environment.API}clientes`;
+  private readonly pedidosAPI = `${environment.backend.baseUrl}${environment.API}pedidos`;
+  private readonly clientesAPI = `${environment.backend.baseUrl}${environment.API}clientes`;
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +22,7 @@ export class DataCrudService {
 
   findById(id: any) {
     return this.http.get(`${this.pedidosAPI}/${id}`).pipe(
-      delay(1000),
+      delay(500),
       take(1)
       );
   }
@@ -35,12 +35,10 @@ export class DataCrudService {
   }
 
   protected create(pedidos: Partial<PedidosClientes>) {
-    console.log('create: ', pedidos)
     return this.http.post(this.pedidosAPI, pedidos).pipe(take(1));
   }
 
   protected update(record: Partial<PedidosClientes>) {
-    console.log('update: ', record)
     return this.http.put<PedidosClientes>(`${this.pedidosAPI}/${record.id}`, record).pipe(first());
   }
 
@@ -61,7 +59,6 @@ export class DataCrudService {
 
 
   saveClient(cliente: any) {
-    console.log(cliente)
     if(cliente.id) {
       return this.updateClient(cliente)
     }
@@ -73,7 +70,6 @@ export class DataCrudService {
   }
 
   private updateClient(record: Partial<Clientes>) {
-    console.log(record);
     let cliente: any = record;
     delete cliente.search;
     return this.http.put<Clientes>(`${this.clientesAPI}/${cliente.id}`, cliente).pipe(take(1));

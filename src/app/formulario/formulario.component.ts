@@ -24,7 +24,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   @Input() numberPedido: any;
   @Input() pedidosClientes: any = {};
-  @ViewChild('pesquisa') pesquisa!: HTMLInputElement;
   @ViewChild('pedidoNum') pedidoNum: any;
   @Input() arrPedidos: any = [];
 
@@ -85,25 +84,13 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.changeDetectorRef.detectChanges();
   }
 
-  override  ngOnInit(): void {
-  }
-
-  // buildStatus() {
-  //   const values = this.status.map(() => new FormControl(false));
-  //   return this.fb.array(values, FormValidations.requiredMinCheckbox(1));
-  // }
-
-  // get formData() {
-  //   return <FormArray>this.formulario.get('status');
-  // }
+  override  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     let pes = document.getElementById('pesquisa');
-    if(pes) {
-      this.formulario.get('numberPedido')?.setValue('');
-    } else {
-      this.numPedido();
-    }
+    // @ts-ignore
+    pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
+    pes ? this.submitted = false : this.submitted = true;
   }
 
   numPedido() {
@@ -128,7 +115,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.arrPedidos = [];
     dt = dt.toLowerCase();
     this.crudService.list().subscribe((data) =>{
-      console.log(data)
       data.forEach((e: any) => {
         let elm = e.cliente.toLowerCase();
         if(elm.includes(dt) || e.numberPedido === dt) {
@@ -171,7 +157,11 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   onRemove(id: any) {
-    this.crudService.remove(id).subscribe(() => this.searchPedido());
+    this.crudService.remove(id).subscribe(() => {
+      this._snackBar.open('PEDIDO REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
+      this.formulario.get('search');
+      this.searchPedido();
+    });
     ;
   }
 
@@ -182,7 +172,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         data.forEach((e: any) => {
           let elm = e.cliente.toLowerCase();
           if(elm.includes(cliente)) {
-            //e.id = undefined;
             this.pedidosClientes = e;
           }
         });
@@ -320,7 +309,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     for(let i=0; i<totais.length; i++) t += totais[i];
 
     total = t.toFixed(2).replace(".", ",");
-    console.log(pedidoApiWhats)
     for (let i = 0; i < pedidoApiWhats.length; i++) {
       if(pedidoApiWhats[i][0].includes("descricao") && pedidoApiWhats[i][1] !== null) ds.push(pedidoApiWhats[i][1]);
       if(pedidoApiWhats[i][0].includes("quantidade") && pedidoApiWhats[i][1] !== null) qt.push(pedidoApiWhats[i][1]);
@@ -331,9 +319,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     for(let i=0; i<ds.length; i++) newmsg += "\n"+qt[i]+" "+ds[i] + " = " + totais[i];
 
-    console.log(register[0])
-    console.log(pag[0])
-    console.log(retirado[0])
     if(register[0] && pag[0] && retirado[0]) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
     } else if(register[0] && pag[0]) {
@@ -346,7 +331,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + newmsg + "\n\nTotal: R$ " + total + "\n\nStatus: " + status;
     msgEncode = window.encodeURIComponent(msg);
-    console.log(msgEncode);
     if(this.mobileCheck()){
       urlApi = "https://api.whatsapp.com/send";
     }
@@ -376,31 +360,24 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         if(this.pedido[i][0].includes("valorFinal") && this.pedido[i][1] != null) {
           this.pedido[i][1] = this.pedido[i][1] + '';
           this.pedido[i][1] = parseFloat(this.pedido[i][1].replace(",", "."));
-          console.log(this.pedido[i][1])
-          console.log(this.pedido[i][0])
           this.pedido[i][1] =  parseFloat(this.pedido[i][1].toFixed(2));
           this.pedido[i][0] === "valorFinal" ? this.formulario.get('valorFinal')?.setValue(this.pedido[i][1]) : null;
         }
       }
-      console.log(url)
       url == 'registrar-pedido' ? this.pedidosClientes = this.formulario.value : this.pedidosClientes;
       delete this.pedidosClientes.search;
-      console.log(this.pedidosClientes)
     }
   }
 
   submit() {
-    this.submitted = true;
     this.onBeforeSave();
     if(this.formulario.valid) {
       this.crudService.save(this.pedidosClientes).subscribe({
-        next: (data: any) => {
-          console.log(data)
-          this._snackBar.open('REGISTRO SALVO COM SUCESSO!!!', '', {duration: 5000})
+        next: () => {
+          this.submitted ? this.onSuccess() : this.onSuccessEdit();
         },
-        error: (error) => {
-          console.log(error)
-          this._snackBar.open('ERRO AO SALVAR REGISTRO!!!', '', {duration: 5000})
+        error: () => {
+          this.onError()
         },
         complete: () => {
           this.resetar();
@@ -410,6 +387,16 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     } else {
       this._snackBar.open('FORMULARIO INVALIDO!!!', '', {duration: 5000})
     }
+  }
+
+  private onSuccess() {
+    this._snackBar.open('PEDIDO SALVO COM SUCESSO!!!', '', {duration: 5000});
+  }
+  private onSuccessEdit() {
+    this._snackBar.open('PEDIDO EDITADO COM SUCESSO!!!', '', {duration: 5000});
+  }
+  private onError() {
+    this._snackBar.open('ERRO AO SALVAR PEDIDO!!!', '', {duration: 5000});
   }
 
 }

@@ -76,7 +76,6 @@ export class BuscaCepComponent implements OnInit {
       this.cepService.consultaRUA(rua)?.subscribe((data: any) => {
 
         data.forEach((data: any) => {
-          console.log(data);
           this.arrCep.push(data.cep)
           this.arrBairro.push(data.bairro)
           this.arrCidade.push(data.localidade)

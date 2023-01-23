@@ -1,8 +1,7 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormCadastroComponent} from "../form-cadastro/form-cadastro.component";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
-import {HttpClient} from "@angular/common/http";
 import {DataCrudService} from "../shared/services/data-crud.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
@@ -36,16 +35,29 @@ export class FormClienteComponent extends FormCadastroComponent implements OnIni
 
   override ngOnInit(): void {}
 
+  ngAfterViewInit(): void {
+    let pes = document.getElementById('pesquisa');
+    console.log(pes)
+    pes === null ? this.submitted = true : this.submitted = false;
+    console.log(this.submitted)
+  }
+
   submit(): any {
     this.crudService.saveClient(this.clientes).subscribe(
-      success => this.onSuccess(),
-      error => this.onError(),
-      () => console.log('request completo')
+      success => {
+        this.onSuccess();
+        this.submitted ? this.onSuccess() : this.onSuccessEdit();
+        this.resetar();
+      },
+      error => this.onError()
     )
   }
 
   private onSuccess() {
     this._snackBar.open('CLIENTE SALVO COM SUCESSO!!!', '', {duration: 4000});
+  }
+  private onSuccessEdit() {
+    this._snackBar.open('CLIENTE EDITADO COM SUCESSO!!!', '', {duration: 4000});
   }
   private onError() {
     this._snackBar.open('ERRO AO SALVAR CLIENTE!!!', '', {duration: 4000});

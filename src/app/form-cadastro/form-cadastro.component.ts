@@ -10,7 +10,7 @@ import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 export abstract class FormCadastroComponent implements OnInit {
 
   formulario!: FormGroup;
-  submitted: boolean = false;
+  submitted!: boolean;
   i = 0;
   np: any;
 
@@ -24,17 +24,11 @@ export abstract class FormCadastroComponent implements OnInit {
   abstract submit(): any;
 
   onSubmit(): void {
-    this.submitted = true;
-    if(this.formulario.valid) {
-      this.submit();
-    } else {
-      this.verificaValidacoesForm(this.formulario);
-    }
+    this.formulario.valid ? this.submit() : this.verificaValidacoesForm(this.formulario);
   }
 
   verificaValidacoesForm(formGroup: FormGroup | FormArray) {
     Object.keys(formGroup.controls).forEach(campo => {
-      console.log(campo)
       const controle = formGroup.get(campo);
       controle?.markAsDirty();
       controle?.markAsTouched();
