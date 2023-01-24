@@ -24,7 +24,7 @@ export class FormClienteComponent extends FormCadastroComponent implements OnIni
     this.formulario = this.fb.group({
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
-      cep: [null, [Validators.required]],
+      cep: [null],
       cidade: [null, [Validators.required]],
       rua: [null, [Validators.required]],
       numCasa: [null, [Validators.required]],
@@ -43,6 +43,7 @@ export class FormClienteComponent extends FormCadastroComponent implements OnIni
   }
 
   submit(): any {
+    console.log(this.submitted)
     this.crudService.saveClient(this.clientes).subscribe(
       success => {
         this.onSuccess();

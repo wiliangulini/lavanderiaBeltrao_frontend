@@ -1,13 +1,10 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, Validators} from "@angular/forms";
+import {FormBuilder, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {HttpClient} from "@angular/common/http";
 import {DataCrudService} from "../shared/services/data-crud.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormCadastroComponent} from "../form-cadastro/form-cadastro.component";
-import {error} from "@angular/compiler-cli/src/transformers/util";
-import {MatRadioButton} from "@angular/material/radio";
-import {FormValidations} from "../shared/form-validations";
 
 @Component({
   selector: 'app-formulario',
@@ -50,7 +47,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       numberPedido: [null, [Validators.required]],
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
-      cep: [null, [Validators.required]],
+      cep: [null],
       cidade: [null, [Validators.required]],
       rua: [null, [Validators.required]],
       numCasa: [null, [Validators.required]],
