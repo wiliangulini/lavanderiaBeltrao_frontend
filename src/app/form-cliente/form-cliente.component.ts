@@ -25,10 +25,10 @@ export class FormClienteComponent extends FormCadastroComponent implements OnIni
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
       cep: [null],
-      cidade: [null, [Validators.required]],
-      rua: [null, [Validators.required]],
+      cidade: [null],
+      rua: [null],
       numCasa: [null, [Validators.required]],
-      bairro: [null, [Validators.required]],
+      bairro: [null],
       complemento: [null],
     });
   }

@@ -54,3 +54,21 @@ input.form-check-input {
 label.form-check-label.ms-2 {
   font-size: 18px;
 }
+.form-check-label {
+  color: #FFF;
+  font-size: 20px;
+}
+.form-label {
+  width: 100%;
+  text-align: left;
+}
+textarea.form-control {
+  min-height: 50px !important;
+  height: 50px;
+}
+.col-sm-2.col-md-2.col-lg-2.col-xl-2.pesagem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}

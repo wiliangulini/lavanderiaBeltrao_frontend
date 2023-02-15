@@ -47,30 +47,37 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       numberPedido: [null, [Validators.required]],
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
-      cep: [null],
-      cidade: [null, [Validators.required]],
-      rua: [null, [Validators.required]],
-      numCasa: [null, [Validators.required]],
-      bairro: [null, [Validators.required]],
-      complemento: [null],
+      cep: [],
+      cidade: [],
+      rua: [],
+      numCasa: [],
+      bairro: [],
+      complemento: [],
+      entrega_estimada: [],
       quantidade: [null, [Validators.required]],
       descricao: [null, [Validators.required]],
-      total: [null, [Validators.required]],
+      total: [],
+      retirada: [],
       quantidade1: [],
       descricao1: [],
       total1: [],
+      retirada1: [],
       quantidade2: [],
       descricao2: [],
       total2: [],
+      retirada2: [],
       quantidade3: [],
       descricao3: [],
       total3: [],
+      retirada3: [],
       quantidade4: [],
       descricao4: [],
       total4: [],
+      retirada4: [],
       quantidade5: [],
       descricao5: [],
       total5: [],
+      retirada5: [],
       valorFinal: [],
       pedidoRegistrado: [],
       pedidoPago: [],
@@ -85,9 +92,10 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   ngAfterViewInit(): void {
     let pes = document.getElementById('pesquisa');
-    // @ts-ignore
+
     pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
     pes ? this.submitted = false : this.submitted = true;
+    !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
   }
 
   numPedido() {
@@ -124,6 +132,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   onEdit(id: any) {
     this.crudService.findById(id).subscribe((data) => {
       this.pedidosClientes = data;
+      console.log(this.pedidosClientes)
       let totais: any = [];
       let pedido: any = Object.entries(data);
       for (let i = 0; i < pedido.length; i++) {
@@ -168,8 +177,10 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       this.crudService.listClient().subscribe((data) =>{
         data.forEach((e: any) => {
           let elm = e.cliente.toLowerCase();
-          if(elm.includes(cliente)) {
+          if(elm.includes(cliente) && this.pedidosClientes.pedidoRegistrado) {
             this.pedidosClientes = e;
+            this.formulario.get('pedidoRegistrado')?.setValue(true);
+            console.log(this.pedidosClientes)
           }
         });
       })
@@ -217,6 +228,38 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
     let campo = e.originalTarget.id;
     this.formulario.get(campo)?.setValue(v);
+  }
+
+  pesarRetirada(e: any) {
+    let valor: any = e.target.checked;
+    let _iden: any = e.target.id;
+    this.formulario.get(_iden)?.setValue(valor);
+    switch (_iden) {
+      case 'retirada':
+        this.formulario.get('total')?.setValue(0);
+        this.onChange();
+        break;
+      case 'retirada1':
+        this.formulario.get('total1')?.setValue(0);
+        this.onChange();
+        break;
+      case 'retirada2':
+        this.formulario.get('total2')?.setValue(0);
+        this.onChange();
+        break;
+      case 'retirada3':
+        this.formulario.get('total3')?.setValue(0);
+        this.onChange();
+        break;
+      case 'retirada4':
+        this.formulario.get('total4')?.setValue(0);
+        this.onChange();
+        break;
+      case 'retirada5':
+        this.formulario.get('total5')?.setValue(0);
+        this.onChange();
+        break;
+    }
   }
 
   novoCampo() {
@@ -291,6 +334,8 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     let status: any;
     let totais: any = [];
     let newmsg: any = [];
+    let pesagem: any = [];
+    let entrega_estimada: any = [];
     let msg: any;
     let msgEncode: any;
     let urlApi = "https://web.whatsapp.com/send";
@@ -312,9 +357,18 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       if(pedidoApiWhats[i][0].includes("pedidoRegistrado") && pedidoApiWhats[i][1] !== null) register.push(pedidoApiWhats[i][1]);
       if(pedidoApiWhats[i][0].includes("pedidoPago") && pedidoApiWhats[i][1] !== null) pag.push(pedidoApiWhats[i][1]);
       if(pedidoApiWhats[i][0].includes("pedidoRetirado") && pedidoApiWhats[i][1] !== null) retirado.push(pedidoApiWhats[i][1]);
+      if(pedidoApiWhats[i][0].includes("retirada") && pedidoApiWhats[i][1] !== null) pesagem.push(pedidoApiWhats[i][1]);
+      if(pedidoApiWhats[i][0].includes("entrega_estimada") && pedidoApiWhats[i][1] !== null) entrega_estimada.push(pedidoApiWhats[i][1]);
     }
 
-    for(let i=0; i<ds.length; i++) newmsg += "\n"+qt[i]+" "+ds[i] + " = " + totais[i];
+    for(let i=0; i<ds.length; i++) {
+      if(pesagem[i] && totais[i] === 0) {
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + totais[i]+'** pesagem na retirada, valor final irá mudar';
+      } else {
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + totais[i];
+      }
+    }
+    console.log(newmsg)
 
     if(register[0] && pag[0] && retirado[0]) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
@@ -326,7 +380,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       status = 'Pedido Pago;';
     }
 
-    msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + newmsg + "\n\nTotal: R$ " + total + "\n\nStatus: " + status;
+    msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + "\n\nEstimativa de Entrega: " + entrega_estimada +";"+ '\n' + newmsg + "\n\nTotal: R$ " + total + "\n\nStatus: " + status;
     msgEncode = window.encodeURIComponent(msg);
     if(this.mobileCheck()){
       urlApi = "https://api.whatsapp.com/send";
@@ -367,6 +421,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   submit() {
+    console.log(this.pedidosClientes)
     this.onBeforeSave();
     if(this.formulario.valid) {
       this.crudService.save(this.pedidosClientes).subscribe({
