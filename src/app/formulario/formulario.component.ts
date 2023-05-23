@@ -168,16 +168,29 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       this.formulario.get('search');
       this.searchPedido();
     });
-    ;
   }
 
   consultarCliente(event: any) {
     let cliente = event.target?.value.toLowerCase();
+    console.log(cliente);
     if(cliente != null && cliente.length >= 3) {
-      this.crudService.listClient().subscribe((data) =>{
+      this.crudService.listClient().subscribe((data) => {
         data.forEach((e: any) => {
+          console.log(e);
           let elm = e.cliente.toLowerCase();
-          if(elm.includes(cliente) && this.pedidosClientes.pedidoRegistrado) {
+          console.log(elm);
+          let n = elm.indexOf(' ');
+          console.log(n);
+          let name = elm.slice(0, n);
+          console.log(name);
+          let mid = elm.slice(n+1);
+          let md = mid.indexOf(' ');
+          let midName = mid.slice(0, md);
+          let lastName = mid.slice(md+1);
+          console.log(midName);
+          console.log(lastName);
+          if((elm == cliente || name == cliente || midName == cliente || lastName == cliente) && this.pedidosClientes.pedidoRegistrado) {
+            console.log(elm, cliente, name.includes(cliente))
             this.pedidosClientes = e;
             this.formulario.get('pedidoRegistrado')?.setValue(true);
             console.log(this.pedidosClientes)
