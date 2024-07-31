@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   API: 'api/',
   backend: {
-    baseUrl: 'http://lavanderiabeltrao.com.br:8080/'
+    baseUrl: 'http://192.168.0.114:8080/'
   }
 };
 

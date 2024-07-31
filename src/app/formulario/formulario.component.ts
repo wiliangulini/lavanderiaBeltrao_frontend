@@ -24,11 +24,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @ViewChild('pedidoNum') pedidoNum: any;
   @Input() arrPedidos: any = [];
 
-  status: any = ['Pedido Registrado', 'Pedido Pago'];
   vf: any = [];
   pedido: any = [];
   d: number = 0;
-  apiWhats: string = "";
   classField: any;
   test: any;
 
@@ -122,7 +120,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.crudService.list().subscribe((data) =>{
       data.forEach((e: any) => {
         let elm = e.cliente.toLowerCase();
-        if(elm.includes(dt) || e.numberPedido === dt) {
+        if(elm.includes(dt) || e.numberPedido === dt || e.telefone === dt) {
           this.arrPedidos.push(e);
         }
       });
@@ -376,9 +374,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     for(let i=0; i<ds.length; i++) {
       if(pesagem[i] && totais[i] === 0) {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + totais[i]+'** pesagem na retirada, valor final irá mudar';
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",")+'** pesagem na retirada, valor final irá mudar';
       } else {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + totais[i];
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",");
       }
     }
     console.log(newmsg)
@@ -393,7 +391,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       status = 'Pedido Pago;';
     }
 
-    msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + "\n\nEstimativa de Entrega: " + entrega_estimada +";"+ '\n' + newmsg + "\n\nTotal: R$ " + total + "\n\nStatus: " + status;
+    msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + '\n' + newmsg + "\n\nEstimativa de Entrega: " + entrega_estimada +";" + "\n\nTotal: R$ " + total + "\n\nStatus: " + status + "\n\nObs: não seguramos mercadoria mais de 60 dias!!!";
     msgEncode = window.encodeURIComponent(msg);
     if(this.mobileCheck()){
       urlApi = "https://api.whatsapp.com/send";

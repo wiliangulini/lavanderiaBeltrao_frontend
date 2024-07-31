@@ -26,7 +26,11 @@ export class PedidosComponent extends FormularioComponent implements OnInit {
   }
 
   override ngOnInit(): void {
-
+    let pag: any = window.location.href.split("/#/");
+    let btn: any = document.querySelector('.btn-whats');
+    if(pag[1] === 'registrar-pedido') {
+      btn.style.display = 'none';
+    }
   }
 
 
