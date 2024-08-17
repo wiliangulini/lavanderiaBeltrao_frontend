@@ -15,9 +15,9 @@ import {CadastroComponent} from './cadastro/cadastro.component';
 import {BuscaCepComponent} from './busca-cep/busca-cep.component';
 import {EditarComponent} from './editar/editar.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { InputClientComponent } from './input-client/input-client.component';
-import { FormularioComponent } from './formulario/formulario.component';
-import { FormClienteComponent } from './form-cliente/form-cliente.component';
+import {InputClientComponent} from './input-client/input-client.component';
+import {FormularioComponent} from './formulario/formulario.component';
+import {FormClienteComponent} from './form-cliente/form-cliente.component';
 import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
@@ -33,6 +33,7 @@ import {MatRadioModule} from '@angular/material/radio';
         InputClientComponent,
         FormularioComponent,
         FormClienteComponent,
+
     ],
   imports: [
     BrowserModule,
@@ -43,7 +44,7 @@ import {MatRadioModule} from '@angular/material/radio';
     MatIconModule,
     BrowserAnimationsModule,
     MatSnackBarModule,
-    MatRadioModule
+    MatRadioModule,
   ],
   exports: [
     InputClientComponent,

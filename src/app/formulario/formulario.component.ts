@@ -332,6 +332,8 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     }
   }
 
+  msg: any;
+
   enviarPedidoCliente(pedido: any) {
     // falta pegar numero de pecas e t de cada uma delas e o valor final
     let t = 0;
@@ -397,6 +399,63 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       urlApi = "https://api.whatsapp.com/send";
     }
     window.open(urlApi + "?phone=" + celular + "&text=" + msgEncode);
+  }
+
+  imprimir(pedido: any) {
+    let t = 0;
+    let total: any;
+    let pedidoImpresso: any = Object.entries(pedido);
+    let ds: any = [];
+    let qt: any = [];
+    let register: any = [];
+    let pag: any = [];
+    let retirado: any = [];
+    let status: any;
+    let totais: any = [];
+    let newmsg: any = [];
+    let pesagem: any = [];
+    let entrega_estimada: any = [];
+    let celular: any = pedido.telefone;
+    //apenas numeros
+    celular = celular.replace(/\D/g,'');
+    //verificar ddi, add se n tiver;
+    if(celular.length < 13) celular = "55" + celular;
+    console.log(celular);
+    totais = this.loopForTotais(totais, pedidoImpresso);
+
+    for(let i=0; i<totais.length; i++) t += totais[i];
+
+    total = t.toFixed(2).replace(".", ",");
+    for (let i = 0; i < pedidoImpresso.length; i++) {
+      if(pedidoImpresso[i][0].includes("descricao") && pedidoImpresso[i][1] !== null) ds.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("quantidade") && pedidoImpresso[i][1] !== null) qt.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("pedidoRegistrado") && pedidoImpresso[i][1] !== null) register.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("pedidoPago") && pedidoImpresso[i][1] !== null) pag.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("pedidoRetirado") && pedidoImpresso[i][1] !== null) retirado.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("retirada") && pedidoImpresso[i][1] !== null) pesagem.push(pedidoImpresso[i][1]);
+      if(pedidoImpresso[i][0].includes("entrega_estimada") && pedidoImpresso[i][1] !== null) entrega_estimada.push(pedidoImpresso[i][1]);
+    }
+
+    for(let i=0; i<ds.length; i++) {
+      if(pesagem[i] && totais[i] === 0) {
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",")+'** pesagem na retirada, valor final irá mudar';
+      } else {
+        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",");
+      }
+    }
+
+    if(register[0] && pag[0] && retirado[0]) {
+      status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
+    } else if(register[0] && pag[0]) {
+      status = 'Pedido Registrado e Pago;';
+    } else if(register[0]) {
+      status = 'Pedido Registrado;';
+    } else if(pag[0]) {
+      status = 'Pedido Pago;';
+    }
+
+    this.msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + '\n' + newmsg + "\n\nEstimativa de Entrega: " + entrega_estimada +";" + "\n\nTotal: R$ " + total + "\n\nStatus: " + status + "\n\nObs: não seguramos mercadoria mais de 60 dias!!!";
+    console.log(this.msg);
   }
 
   mobileCheck(){
