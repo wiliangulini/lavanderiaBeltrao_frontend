@@ -20,6 +20,7 @@ import {FormularioComponent} from './formulario/formulario.component';
 import {FormClienteComponent} from './form-cliente/form-cliente.component';
 import {MatRadioModule} from '@angular/material/radio';
 
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -33,7 +34,6 @@ import {MatRadioModule} from '@angular/material/radio';
         InputClientComponent,
         FormularioComponent,
         FormClienteComponent,
-
     ],
   imports: [
     BrowserModule,

@@ -24,7 +24,7 @@ export abstract class FormCadastroComponent implements OnInit {
   abstract submit(): any;
 
   onSubmit(): void {
-    this.formulario.valid ? this.submit() : this.verificaValidacoesForm(this.formulario);
+    (this.formulario.valid) ? this.submit() : this.verificaValidacoesForm(this.formulario);
   }
 
   verificaValidacoesForm(formGroup: FormGroup | FormArray) {

@@ -6,6 +6,7 @@ import {DataCrudService} from "../shared/services/data-crud.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormCadastroComponent} from "../form-cadastro/form-cadastro.component";
 
+
 @Component({
   selector: 'app-formulario',
   templateUrl: './formulario.component.html',
@@ -22,6 +23,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @Input() numberPedido: any;
   @Input() pedidosClientes: any = {};
   @ViewChild('pedidoNum') pedidoNum: any;
+  @ViewChild('imprimir') imprim: any;
   @Input() arrPedidos: any = [];
 
   vf: any = [];
@@ -98,8 +100,10 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   numPedido() {
     let num: any = [];
-    this.crudService.list().subscribe((data: any) =>{
+    this.crudService.list().subscribe((data: any) => {
+      console.log(data);
       data.forEach((e: any) => {
+        console.log(e)
         num.push(e.numberPedido)
       });
       if(num.length == 0) {
@@ -231,13 +235,15 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   formatarMoeda(e: any): void {
+    console.log(e)
     e.target.value = e.target.value + "";
     let v = e.target.value.replace(/\D/g,"");
     v = (v/100).toFixed(2) + "";
     v = v.replace(".", ",");
     v = v.replace(/(\d)(\d{3})(\d{3}),/g, "$1.$2.$3,");
     v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
-    let campo = e.originalTarget.id;
+    console.log(e)
+    let campo = e.target.id;
     this.formulario.get(campo)?.setValue(v);
   }
 
@@ -402,9 +408,12 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   imprimir(pedido: any) {
+    console.log(this.imprim)
+    console.log(pedido)
     let t = 0;
     let total: any;
     let pedidoImpresso: any = Object.entries(pedido);
+    console.log(pedidoImpresso)
     let ds: any = [];
     let qt: any = [];
     let register: any = [];
@@ -493,6 +502,10 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   submit() {
     console.log(this.pedidosClientes)
     this.onBeforeSave();
+    let save: any = document.querySelector('#salvar');
+    let imp: any = document.querySelector('#imprimir');
+
+
     if(this.formulario.valid) {
       this.crudService.save(this.pedidosClientes).subscribe({
         next: () => {
