@@ -5,6 +5,8 @@ import {HttpClient} from "@angular/common/http";
 import {DataCrudService} from "../shared/services/data-crud.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormCadastroComponent} from "../form-cadastro/form-cadastro.component";
+import * as printJS from 'print-js';
+import {empty} from "rxjs";
 
 
 @Component({
@@ -23,7 +25,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @Input() numberPedido: any;
   @Input() pedidosClientes: any = {};
   @ViewChild('pedidoNum') pedidoNum: any;
-  @ViewChild('imprimir') imprim: any;
   @Input() arrPedidos: any = [];
 
   vf: any = [];
@@ -82,6 +83,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       pedidoRegistrado: [],
       pedidoPago: [],
       pedidoRetirado: [],
+      textarea: [],
     });
   }
   ngAfterViewChecked(): void {
@@ -96,6 +98,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
     pes ? this.submitted = false : this.submitted = true;
     !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
+
+    // let textarea: any = document.querySelector('#printJS-form');
+    // textarea.setAttribute('style', 'opacity: 0;')
   }
 
   numPedido() {
@@ -408,7 +413,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   imprimir(pedido: any) {
-    console.log(this.imprim)
     console.log(pedido)
     let t = 0;
     let total: any;
@@ -426,7 +430,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     let entrega_estimada: any = [];
     let celular: any = pedido.telefone;
     //apenas numeros
-    celular = celular.replace(/\D/g,'');
+    celular = celular!.replace(/\D/g,'');
     //verificar ddi, add se n tiver;
     if(celular.length < 13) celular = "55" + celular;
     console.log(celular);
@@ -452,6 +456,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",");
       }
     }
+    console.log(newmsg)
 
     if(register[0] && pag[0] && retirado[0]) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
@@ -463,9 +468,32 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       status = 'Pedido Pago;';
     }
 
+    let textarea: any = document.querySelector('#printJS-form');
+    textarea.classList.add('d-flex');
+    textarea.classList.remove('d-none');
+    console.log(textarea)
+
     this.msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + '\n' + newmsg + "\n\nEstimativa de Entrega: " + entrega_estimada +";" + "\n\nTotal: R$ " + total + "\n\nStatus: " + status + "\n\nObs: não seguramos mercadoria mais de 60 dias!!!";
-    console.log(this.msg);
+
+    console.log(this.msg)
+
+    setTimeout(() => {
+      printJS({
+        printable: 'printJS-form',
+        type: 'html',
+        header: 'Lavanderia Beltrão',  // Cabeçalho opcional
+        style: '#printJS-form { border: 0; padding: 20px 0 0 20px; }'
+      });
+    }, 500);
+
+    setTimeout(() => {
+      textarea.classList.add('d-none');
+      textarea.classList.remove('d-flex');
+      textarea.innerHTML = '';
+    }, 2000);
+
   }
+
 
   mobileCheck(){
     let check = false;
