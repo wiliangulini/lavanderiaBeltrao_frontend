@@ -99,16 +99,16 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     pes ? this.submitted = false : this.submitted = true;
     !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
 
-    // let textarea: any = document.querySelector('#printJS-form');
-    // textarea.setAttribute('style', 'opacity: 0;')
+    let url = window.location.hash.slice(2);
+    console.log(url);
+    let imprimir: any = document.querySelector('#imprimir');
+    url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
   }
 
   numPedido() {
     let num: any = [];
     this.crudService.list().subscribe((data: any) => {
-      console.log(data);
       data.forEach((e: any) => {
-        console.log(e)
         num.push(e.numberPedido)
       });
       if(num.length == 0) {
