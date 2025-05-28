@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {HttpClient} from "@angular/common/http";
 import {DataCrudService} from "../shared/services/data-crud.service";
@@ -54,22 +54,24 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       bairro: [],
       complemento: [],
       entrega_estimada: [],
-      quantidade: [null, [Validators.required]],
-      descricao: [null, [Validators.required]],
       total: [],
       retirada: [],
       valorFinal: [],
       pedidoRegistrado: [],
       pedidoPago: [],
       pedidoRetirado: [],
-      textarea: [],
+      itens: this.fb.array([]) // < - array de itens
     });
   }
   ngAfterViewChecked(): void {
     this.changeDetectorRef.detectChanges();
   }
 
-  override  ngOnInit(): void {}
+  override  ngOnInit(): void {
+    this.itens.valueChanges.subscribe(() => {
+      this.calcularValorFinal();
+    });
+  }
 
   ngAfterViewInit(): void {
     let pes = document.getElementById('pesquisa');
@@ -87,6 +89,46 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     if(control === 0) {
 
     }
+  }
+
+  // Calcula o valor total do pedido somando os totais dos itens
+  calcularValorFinal(): void {
+    const total = this.itens.controls.reduce((acc, item) => {
+      const valor = Number(item.get('total')?.value) || 0;
+      return acc + valor;
+    }, 0);
+
+    this.formulario.get('valorFinal')?.setValue(total);
+  }
+
+  createItem(): FormGroup {
+    return this.fb.group({
+      id: [null], // Se for editar um item existente
+      descricao: [null, Validators.required],
+      quantidade: [1, [Validators.required, Validators.min(1)]],
+      total: [null, Validators.required],
+      retirada: [false]
+    });
+  }
+
+  get itens(): FormArray {
+    return this.formulario.get('itens') as FormArray;
+  }
+
+  addItem() {
+    this.itens.push(this.createItem());
+  }
+
+  removeItem(index: number) {
+    this.itens.removeAt(index);
+  }
+
+
+  aplicaCssErroItem(index: number, campo: string) {
+    const item = this.itens.at(index);
+    return {
+      'is-invalid': item.get(campo)?.invalid && item.get(campo)?.touched
+    };
   }
 
   numPedido() {
@@ -142,41 +184,58 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     )
   }
 
-  onEdit(id: any) {
-    this.crudService.findById(id).subscribe((data) => {
-      this.pedidosClientes = data;
-      console.log(this.pedidosClientes)
-      let totais: any = [];
-      let pedido: any = Object.entries(data);
-      console.log(pedido)
+  onEdit(id: any): void {
+    this.crudService.findById(id).subscribe((data: any) => {
+      console.log('Dados recebidos:', data);
 
-      for (let i = 0; i < pedido.length; i++) {
-        if(pedido[i][0] === "itens") {
-          this.pedidosClientes.quantidade = this.pedidosClientes.itens[0].quantidade;
-          this.pedidosClientes.descricao = this.pedidosClientes.itens[0].descricao;
-        }
-        if(pedido[i][0].includes("total") && pedido[i][1] != null) {
-          totais.push(pedido[i][0]);
-          pedido[i][1] = pedido[i][1] + '';
-          pedido[i][0] === "total" ? this.pedidosClientes.total = pedido[i][1].replace(".", ",") : null;
-        }
-        if(pedido[i][0] === 'valorFinal') {
-          pedido[i][1] = pedido[i][1] + '';
-          this.pedidosClientes.valorFinal = pedido[i][1].replace(".", ",");
-        }
+      // Converte o valorFinal
+      const valorFinal = typeof data.valorFinal == 'object' ? Number(data.valorFinal.parsedValue) : data.valorFinal;
+
+      // Preencher campos principais
+      this.formulario.patchValue({
+        data: data.data,
+        numberPedido: data.numberPedido,
+        cliente: data.cliente,
+        telefone: data.telefone,
+        cep: data.cep,
+        cidade: data.cidade,
+        rua: data.rua,
+        numCasa: data.numCasa,
+        bairro: data.bairro,
+        complemento: data.complemento,
+        entrega_estimada: data.entrega_estimada,
+        pedidoRegistrado: data.pedidoRegistrado,
+        pedidoPago: data.pedidoPago,
+        pedidoRetirado: data.pedidoRetirado,
+        valorFinal: valorFinal
+      });
+
+      // Limpa o FormArray antes de preencher
+      this.itens.clear();
+
+      // Preenche o FormArray de itens
+      if (data.itens && Array.isArray(data.itens)) {
+        data.itens.forEach((item: any) => {
+          const totalItem = typeof item.total === 'object' ? Number(item.total.parsedValue) : item.total;
+
+          const itemForm = this.fb.group({
+            descricao: [item.descricao, Validators.required],
+            quantidade: [item.quantidade, [Validators.required, Validators.min(1)]],
+            total: [totalItem, Validators.required],
+            retirada: [item.retirada ?? false]
+          });
+
+          this.itens.push(itemForm);
+        });
       }
-      for (let i=0; i<totais.length;i++) {
-        totais[i] = totais[i].slice(5, 6);
-        if(totais[i] != '') {
-          let classField = '.product' + totais[i];
-          let test = document.querySelector(classField);
-          test?.classList.remove('remove');
-        }
 
-      }
-
+      // Atualiza o valor final calculado
+      this.calcularValorFinal();
     });
   }
+
+
+
 
   onRemove(id: any) {
     this.crudService.remove(id).subscribe(() => {
@@ -228,6 +287,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     }
     return valor;
   }
+
 
   onChange(): void {
     let total = 0;
@@ -477,18 +537,21 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         }
       }
       url == 'registrar-pedido' ? this.pedidosClientes = this.formulario.value : this.pedidosClientes;
+      this.pedidosClientes.itens[0].quantidade = this.pedidosClientes.quantidade;
+      this.pedidosClientes.itens[0].descricao = this.pedidosClientes.descricao;
+      delete this.pedidosClientes.quantidade;
+      delete this.pedidosClientes.descricao;
       delete this.pedidosClientes.search;
     }
   }
 
   submit() {
     this.onBeforeSave();
-    let save: any = document.querySelector('#salvar');
-    let imp: any = document.querySelector('#imprimir');
 
     console.log(this.pedidosClientes)
 
     if(this.formulario.valid) {
+      console.log('Dados do formulário:', this.formulario.value);
       this.crudService.save(this.pedidosClientes).subscribe({
         next: (data: any) => {
           console.log(data)
@@ -504,6 +567,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       })
     } else {
       this._snackBar.open('FORMULARIO INVALIDO!!!', '', {duration: 5000})
+      this.formulario.markAllAsTouched();
     }
   }
 

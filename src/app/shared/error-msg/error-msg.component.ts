@@ -1,7 +1,7 @@
 import {DataCrudService} from '../services/data-crud.service';
 import {HttpClient} from '@angular/common/http';
 import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormControl} from '@angular/forms';
 import {FormValidations} from '../form-validations';
 
 import {ConsultaCepService} from '../services/consulta-cep.service';
@@ -18,7 +18,7 @@ export class ErrorMsgComponent extends FormularioComponent implements OnInit {
 
   @Input() nome: string = '';
 
-  @Input() control!: FormControl;
+  @Input() control!: AbstractControl | null;
 
   @Input() label: string = '';
 
@@ -37,12 +37,20 @@ export class ErrorMsgComponent extends FormularioComponent implements OnInit {
   }
 
   get errorMessage() {
+    if (!this.control || !this.control.errors) {
+      return null;
+    }
 
-    for(const propertyName in this.control.errors) {
-      if(this.control.errors!.hasOwnProperty(propertyName) && this.control.touched) {
-        return FormValidations.getErrorMsg(this.label, propertyName, this.control.errors![propertyName])
+    for (const propertyName in this.control.errors) {
+      if (this.control.errors.hasOwnProperty(propertyName) && this.control.touched) {
+        return FormValidations.getErrorMsg(
+          this.label,
+          propertyName,
+          this.control.errors[propertyName]
+        );
       }
     }
     return null;
   }
+
 }
