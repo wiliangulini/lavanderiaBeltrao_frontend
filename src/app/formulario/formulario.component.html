@@ -48,7 +48,7 @@
       <label for="numberPedido" class="form-label ">Número Pedido</label>
       <input
         id="numberPedido"
-        type="text"
+        type="number"
         class="form-control in-valid"
         [ngModel]="pedidosClientes.numberPedido"
         formControlName="numberPedido"
@@ -196,271 +196,13 @@
       >
     </div>
   </div>
-  <div class="form-group row mb-3 product product1 remove">
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-      <label for="quantidade1" class="form-label">Quantidade</label>
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade1"
-        placeholder="Quantidade"
-        formControlName="quantidade1"
-        [(ngModel)]="pedidosClientes.quantidade1"
-        [ngClass]="aplicaCssErro('quantidade1')"
-      >
-      <app-error-msg [control]="$any(formulario).get('quantidade1')" label="Quantidade1"></app-error-msg>
-    </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-      <label for="descricao1" class="form-label">Descrição</label>
-      <textarea
-        type="text"
-        class="form-control"
-        id="descricao1"
-        placeholder="Descrição"
-        formControlName="descricao1"
-        [(ngModel)]="pedidosClientes.descricao1"
-        [ngClass]="aplicaCssErro('descricao1')"
-      ></textarea>
-      <app-error-msg [control]="$any(formulario).get('descricao1')" label="Descrição1"></app-error-msg>
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <label for="total1" class="form-label">Total</label>
-      <input
-        type="text"
-        class="form-control"
-        id="total1"
-        placeholder="Total"
-        formControlName="total1"
-        (change)="onChange()"
-        (keyup)="formatarMoeda($event)"
-        [(ngModel)]="pedidosClientes.total1"
-      >
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 pesagem">
-      <label for="retirada1" class="form-check-label">Pesagem na Retirada</label>
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="retirada1"
-        formControlName="retirada1"
-        [(ngModel)]="pedidosClientes.retirada1"
-        (click)="pesarRetirada($event)"
-      >
-    </div>
-  </div>
-  <div class="form-group row mb-3 product product2 remove">
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-      <label for="quantidade2" class="form-label">Quantidade</label>
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade2"
-        placeholder="Quantidade"
-        formControlName="quantidade2"
-        [(ngModel)]="pedidosClientes.quantidade2"
-        [ngClass]="aplicaCssErro('quantidade2')"
-      >
-      <app-error-msg [control]="$any(formulario).get('quantidade2')" label="Quantidade2"></app-error-msg>
-    </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-      <label for="descricao2" class="form-label">Descrição</label>
-      <textarea
-        class="form-control"
-        id="descricao2"
-        placeholder="Descrição"
-        formControlName="descricao2"
-        [(ngModel)]="pedidosClientes.descricao2"
-        [ngClass]="aplicaCssErro('descricao2')"
-      ></textarea>
-      <app-error-msg [control]="$any(formulario).get('descricao2')" label="Descrição2"></app-error-msg>
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <label for="total2" class="form-label ">Total</label>
-      <input
-        type="text"
-        class="form-control"
-        id="total2"
-        placeholder="Total"
-        formControlName="total2"
-        (change)="onChange()"
-        (keyup)="formatarMoeda($event)"
-        [(ngModel)]="pedidosClientes.total2"
-      >
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 pesagem">
-      <label for="retirada2" class="form-check-label">Pesagem na Retirada</label>
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="retirada2"
-        formControlName="retirada2"
-        [(ngModel)]="pedidosClientes.retirada2"
-        (click)="pesarRetirada($event)"
-      >
-    </div>
-  </div>
-  <div class="form-group row mb-3 product product3 remove">
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-      <label for="quantidade3" class="form-label">Quantidade</label>
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade3"
-        placeholder="Quantidade"
-        formControlName="quantidade3"
-        [(ngModel)]="pedidosClientes.quantidade3"
-        [ngClass]="aplicaCssErro('quantidade3')"
-      >
-      <app-error-msg [control]="$any(formulario).get('quantidade3')" label="Quantidade3"></app-error-msg>
-    </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-      <label for="descricao3" class="form-label">Descrição</label>
-      <textarea
-        class="form-control"
-        id="descricao3"
-        placeholder="Descrição"
-        formControlName="descricao3"
-        [(ngModel)]="pedidosClientes.descricao3"
-        [ngClass]="aplicaCssErro('descricao3')"
-      ></textarea>
-      <app-error-msg [control]="$any(formulario).get('descricao3')" label="Descrição3"></app-error-msg>
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <label for="total3" class="form-label ">Total</label>
-      <input
-        type="text"
-        class="form-control"
-        id="total3"
-        placeholder="Total"
-        formControlName="total3"
-        (change)="onChange()"
-        (keyup)="formatarMoeda($event)"
-        [(ngModel)]="pedidosClientes.total3"
-      >
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 pesagem">
-      <label for="retirada3" class="form-check-label">Pesagem na Retirada</label>
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="retirada3"
-        formControlName="retirada3"
-        [(ngModel)]="pedidosClientes.retirada3"
-        (click)="pesarRetirada($event)"
-      >
-    </div>
-  </div>
-  <div class="form-group row mb-3 product product4 remove" >
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-      <label for="quantidade4" class="form-label">Quantidade</label>
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade4"
-        placeholder="Quantidade"
-        formControlName="quantidade4"
-        [(ngModel)]="pedidosClientes.quantidade4"
-        [ngClass]="aplicaCssErro('quantidade4')"
-      >
-      <app-error-msg [control]="$any(formulario).get('quantidade4')" label="Quantidade4"></app-error-msg>
-    </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-      <label for="descricao4" class="form-label">Descrição</label>
-      <textarea
-        class="form-control"
-        id="descricao4"
-        placeholder="Descrição"
-        formControlName="descricao4"
-        [(ngModel)]="pedidosClientes.descricao4"
-        [ngClass]="aplicaCssErro('descricao4')"
-      ></textarea>
-      <app-error-msg [control]="$any(formulario).get('descricao4')" label="Descrição4"></app-error-msg>
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <label for="total4" class="form-label ">Total</label>
-      <input
-        type="text"
-        class="form-control"
-        id="total4"
-        placeholder="Total"
-        formControlName="total4"
-        (change)="onChange()"
-        (keyup)="formatarMoeda($event)"
-        [(ngModel)]="pedidosClientes.total4"
-      >
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 pesagem">
-      <label for="retirada4" class="form-check-label">Pesagem na Retirada</label>
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="retirada4"
-        formControlName="retirada4"
-        [(ngModel)]="pedidosClientes.retirada4"
-        (click)="pesarRetirada($event)"
-      >
-    </div>
-  </div>
-  <div class="form-group row mb-3 product product5 remove" >
-    <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
-      <label for="quantidade5" class="form-label">Quantidade</label>
-      <input
-        type="number"
-        class="form-control"
-        id="quantidade5"
-        placeholder="Quantidade"
-        formControlName="quantidade5"
-        [(ngModel)]="pedidosClientes.quantidade5"
-        [ngClass]="aplicaCssErro('quantidade5')"
-      >
-      <app-error-msg [control]="$any(formulario).get('quantidade5')" label="Quantidade5"></app-error-msg>
-    </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
-      <label for="descricao5" class="form-label">Descrição</label>
-      <textarea
-        type="text"
-        class="form-control"
-        id="descricao5"
-        placeholder="Descrição"
-        formControlName="descricao5"
-        [(ngModel)]="pedidosClientes.descricao5"
-        [ngClass]="aplicaCssErro('descricao5')"
-      ></textarea>
-      <app-error-msg [control]="$any(formulario).get('descricao5')" label="Descrição5"></app-error-msg>
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <label for="total5" class="form-label ">Total</label>
-      <input
-        type="text"
-        class="form-control"
-        id="total5"
-        placeholder="Total"
-        formControlName="total5"
-        (change)="onChange()"
-        (keyup)="formatarMoeda($event)"
-        [(ngModel)]="pedidosClientes.total5"
-
-      >
-    </div>
-    <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 pesagem">
-      <label for="retirada5" class="form-check-label">Pesagem na Retirada</label>
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="retirada5"
-        formControlName="retirada5"
-        [ngClass]="aplicaCssErro('retirada5')"
-        [(ngModel)]="pedidosClientes.retirada5"
-        (click)="pesarRetirada($event)"
-      >
-    </div>
-  </div>
   <div class="form-group row justify-content-end mb-3 product" >
     <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
       <label for="valorFinal" class="form-label">Valor Final</label>
       <input
         id="valorFinal"
-        type="text"
+        type="number"
+        step="0.01"
         class="form-control"
         placeholder="Valor Final"
         formControlName="valorFinal"
@@ -468,17 +210,10 @@
         [(ngModel)]="pedidosClientes.valorFinal"
       >
     </div>
-    <div class="miniTable col-sm-2 col-md-2 col-lg-2 col-xl-2">
-      <div class="colunaHead w-100">Novo Campo</div>
-      <div class="actions d-flex justify-content-around align-items-center w-100">
-        <a (click)="novoCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon aria-hidden="false" fontIcon="add">add</mat-icon></a>
-        <a (click)="removeCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
-      </div>
-    </div>
-    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 d-flex flex-column align-items-center justify-content-between">
+    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 d-flex flex-column align-items-center justify-content-between">
       <label class="colunaHead w-100">Pedido Status</label>
       <div class="row justify-content-around align-item-center w-100">
-        <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <div class="d-flex justify-content-center align-items-center col-4 p-0">
           <input
             class="form-check-input"
             type="checkbox"
@@ -489,7 +224,7 @@
           >
           <label class="form-check-label ms-2" for="pedidoRegistrado">Pedido Registrado</label>
         </div>
-        <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <div class="d-flex justify-content-center align-items-center col-4 p-0">
           <input
             class="form-check-input"
             type="checkbox"
@@ -500,9 +235,7 @@
           >
           <label class="form-check-label ms-2" for="pedidoPago">Pedido Pago</label>
         </div>
-      </div>
-      <div class="row justify-content-around align-item-center w-100 mt-2">
-        <div class="d-flex justify-content-center align-items-center col-6 p-0">
+        <div class="d-flex justify-content-center align-items-center col-4 p-0">
           <input
             class="form-check-input"
             type="checkbox"

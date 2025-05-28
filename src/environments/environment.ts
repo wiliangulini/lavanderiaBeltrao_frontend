@@ -4,10 +4,7 @@
 
 export const environment = {
   production: false,
-  API: 'api/',
-  backend: {
-    baseUrl: 'http://lavanderiabeltrao.com.br:8080/'
-  }
+  apiUrl: 'http://localhost:8080'
 };
 
 /*

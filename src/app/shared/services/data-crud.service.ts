@@ -11,8 +11,8 @@ import { PedidosClientes } from '../pedidos-clientes';
 })
 export class DataCrudService {
 
-  private readonly pedidosAPI = `${environment.backend.baseUrl}${environment.API}pedidos`;
-  private readonly clientesAPI = `${environment.backend.baseUrl}${environment.API}clientes`;
+  private readonly pedidosAPI = `${environment.apiUrl}/pedidos`;
+  private readonly clientesAPI = `${environment.apiUrl}/clientes`;
 
   constructor(private http: HttpClient) { }
 

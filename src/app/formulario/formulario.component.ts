@@ -6,7 +6,6 @@ import {DataCrudService} from "../shared/services/data-crud.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormCadastroComponent} from "../form-cadastro/form-cadastro.component";
 import * as printJS from 'print-js';
-import {empty} from "rxjs";
 
 
 @Component({
@@ -44,7 +43,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     super(CS, CP);
     this.formulario = this.fb.group({
       search: [],
-      data: [null, [Validators.required]],
+      data: [null, Validators.required],
       numberPedido: [null, [Validators.required]],
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
@@ -59,26 +58,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       descricao: [null, [Validators.required]],
       total: [],
       retirada: [],
-      quantidade1: [],
-      descricao1: [],
-      total1: [],
-      retirada1: [],
-      quantidade2: [],
-      descricao2: [],
-      total2: [],
-      retirada2: [],
-      quantidade3: [],
-      descricao3: [],
-      total3: [],
-      retirada3: [],
-      quantidade4: [],
-      descricao4: [],
-      total4: [],
-      retirada4: [],
-      quantidade5: [],
-      descricao5: [],
-      total5: [],
-      retirada5: [],
       valorFinal: [],
       pedidoRegistrado: [],
       pedidoPago: [],
@@ -101,39 +80,66 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     let url = window.location.hash.slice(2);
     console.log(url);
-    let imprimir: any = document.querySelector('#imprimir');
+    let imprimir: any = document.querySelector('#imprimir')!;
     url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
+
+    let control: number = 0;
+    if(control === 0) {
+
+    }
   }
 
   numPedido() {
     let num: any = [];
     this.crudService.list().subscribe((data: any) => {
-      data.forEach((e: any) => {
-        num.push(e.numberPedido)
-      });
-      if(num.length == 0) {
-        this.np = 1;
-      } else {
-        num = num.sort((a: any, b: any) => a - b)
-        this.np = num.pop();
-        this.np++;
+        data.forEach((e: any) => {
+          num.push(e.numberPedido)
+        });
+        if(num.length == 0) {
+          this.np = 1;
+        } else {
+          num = num.sort((a: any, b: any) => a - b)
+          this.np = num.pop();
+          this.np++;
+        }
+        this.formulario.get('numberPedido')?.setValue(this.np);
+      },
+      error => {
+        if (error.status === 500) {
+          alert("Erro interno no servidor. Tente novamente mais tarde.");
+        } else {
+          alert("Erro inesperado: " + error.message);
+        }
       }
-      this.formulario.get('numberPedido')?.setValue(this.np);
-    });
+    );
   }
 
   searchPedido() {
     let dt = this.formulario.get('search')?.value;
     this.arrPedidos = [];
     dt = dt.toLowerCase();
-    this.crudService.list().subscribe((data) =>{
-      data.forEach((e: any) => {
-        let elm = e.cliente.toLowerCase();
-        if(elm.includes(dt) || e.numberPedido === dt || e.telefone === dt) {
-          this.arrPedidos.push(e);
+    this.crudService.list().subscribe((data) => {
+        data.forEach((e: any) => {
+          if(e.pedidoRetirado){
+            console.log(e);
+          }
+          if(e.retirada1 !== null || e.retirada1 > -1){
+            console.log(e);
+          }
+          let elm = e.cliente.toLowerCase();
+          if(elm.includes(dt) || e.numberPedido === dt || e.telefone === dt) {
+            this.arrPedidos.push(e);
+          }
+        });
+      },
+      error => {
+        if (error.status === 500) {
+          alert("Erro interno no servidor. Tente novamente mais tarde.");
+        } else {
+          alert("Erro inesperado: " + error.message);
         }
-      });
-    })
+      }
+    )
   }
 
   onEdit(id: any) {
@@ -142,16 +148,17 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       console.log(this.pedidosClientes)
       let totais: any = [];
       let pedido: any = Object.entries(data);
+      console.log(pedido)
+
       for (let i = 0; i < pedido.length; i++) {
+        if(pedido[i][0] === "itens") {
+          this.pedidosClientes.quantidade = this.pedidosClientes.itens[0].quantidade;
+          this.pedidosClientes.descricao = this.pedidosClientes.itens[0].descricao;
+        }
         if(pedido[i][0].includes("total") && pedido[i][1] != null) {
           totais.push(pedido[i][0]);
           pedido[i][1] = pedido[i][1] + '';
           pedido[i][0] === "total" ? this.pedidosClientes.total = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total1" ? this.pedidosClientes.total1 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total2" ? this.pedidosClientes.total2 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total3" ? this.pedidosClientes.total3 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total4" ? this.pedidosClientes.total4 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total5" ? this.pedidosClientes.total5 = pedido[i][1].replace(".", ",") : null;
         }
         if(pedido[i][0] === 'valorFinal') {
           pedido[i][1] = pedido[i][1] + '';
@@ -165,7 +172,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
           let test = document.querySelector(classField);
           test?.classList.remove('remove');
         }
+
       }
+
     });
   }
 
@@ -215,11 +224,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         pedido[i][1] = parseFloat(pedido[i][1].replace(",", "."));
         pedido[i][1] =  parseFloat(pedido[i][1].toFixed(2));
         pedido[i][0] === "total" ? valor.push(this.pedidosClientes.total = pedido[i][1])  : null;
-        pedido[i][0] === "total1" ? valor.push(this.pedidosClientes.total1 = pedido[i][1]) : null;
-        pedido[i][0] === "total2" ? valor.push(this.pedidosClientes.total2 = pedido[i][1]) : null;
-        pedido[i][0] === "total3" ? valor.push(this.pedidosClientes.total3 = pedido[i][1]) : null;
-        pedido[i][0] === "total4" ? valor.push(this.pedidosClientes.total4 = pedido[i][1]) : null;
-        pedido[i][0] === "total5" ? valor.push(this.pedidosClientes.total5 = pedido[i][1]) : null;
       }
     }
     return valor;
@@ -229,13 +233,30 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     let total = 0;
     let valorFinal: any;
     let valf: any = []
+    let testeTotal: any = [];
     this.pedido = Object.entries(this.pedidosClientes);
+    console.log(this.pedido);
+    this.pedido.forEach((e: any) => {
+      console.log(e);
+      if(e[0] === "itens") {
+        e[1].forEach((elm: any) => {
+          testeTotal.push(elm.total);
+        })
+      }
+    })
+    console.log(testeTotal);
     valf = this.loopForTotais(valf, this.pedido);
-
+    console.log(valf);
     for(let i=0; i<valf.length; i++) {
       total += valf[i];
     }
-    valorFinal = total.toFixed(2).replace(".", ",");
+    for(let i = 0; i < testeTotal.length; i++) {
+      total += testeTotal[i];
+    }
+    console.log(total);
+    valorFinal = total;
+    console.log(valorFinal);
+    console.log(typeof valorFinal);
     this.formulario.get("valorFinal")?.setValue(valorFinal);
   }
 
@@ -249,6 +270,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     v = v.replace(/(\d)(\d{3}),/g, "$1.$2,");
     console.log(e)
     let campo = e.target.id;
+    console.log(v);
     this.formulario.get(campo)?.setValue(v);
   }
 
@@ -261,85 +283,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         this.formulario.get('total')?.setValue(0);
         this.onChange();
         break;
-      case 'retirada1':
-        this.formulario.get('total1')?.setValue(0);
-        this.onChange();
-        break;
-      case 'retirada2':
-        this.formulario.get('total2')?.setValue(0);
-        this.onChange();
-        break;
-      case 'retirada3':
-        this.formulario.get('total3')?.setValue(0);
-        this.onChange();
-        break;
-      case 'retirada4':
-        this.formulario.get('total4')?.setValue(0);
-        this.onChange();
-        break;
-      case 'retirada5':
-        this.formulario.get('total5')?.setValue(0);
-        this.onChange();
-        break;
-    }
-  }
-
-  novoCampo() {
-    if(this.d == 0 && this.arrPedidos.length > 0) {
-      this.pedido = Object.entries(this.pedidosClientes);
-      let result = this.loopForTotais(this.vf, this.pedido)
-      this.d = result.length;
-      this.newCamp(this.d);
-    } else {
-      this.newCamp(this.i);
-    }
-  }
-
-  removeCampo() {
-    if(this.d > 0 && this.arrPedidos.length > 0) {
-      this.pedido = Object.entries(this.pedidosClientes);
-      let result = this.loopForTotais(this.vf, this.pedido);
-      if(this.i <= 5 && this.i > 0){
-        let t = 'total'+this.i;
-        let q = 'quantidade'+this.i;
-        let d = 'descricao'+this.i;
-        let getT = this.formulario.get(t);
-        let getQ = this.formulario.get(q);
-        let getD = this.formulario.get(d);
-        if(getT?.value !== null || getQ?.value !== null || getD?.value !== null) {
-          getT?.setValue(null);
-          getQ?.setValue('');
-          getD?.setValue('');
-          this.onChange()
-        }
-        this.remCamp(this.i);
-      }
-    } else {
-      this.remCamp(this.i)
-    }
-  }
-
-  newCamp(e: any) {
-    e == 0 ? e = 1 : e = e;
-    this.i = e;
-    this.classField = '.product' + this.i;
-    this.test = document.querySelector(this.classField);
-    this.test?.classList.add('add');
-    this.test?.classList.remove('remove');
-    if(this.i < 5) {
-      this.i++;
-    } else if(this.i == 5){
-      this._snackBar.open('NÃO SAO PERMITIDOS MAIS CAMPOS!!!', '', {duration: 5000});
-    }
-  }
-
-  remCamp(e: any) {
-    let classe = '.product'+this.i;
-    let test = document.querySelector(classe);
-    test?.classList.remove('add');
-    test?.classList.add('remove');
-    if(this.i <= 5 && this.i >= 2) {
-      this.i--;
     }
   }
 
@@ -396,6 +339,8 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     if(register[0] && pag[0] && retirado[0]) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
+      // se o pedido foi pago e retirado pelo cliente ele ja pode ser excluido do banco de dados
+      console.log(status);
     } else if(register[0] && pag[0]) {
       status = 'Pedido Registrado e Pago;';
     } else if(register[0]) {
@@ -504,7 +449,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   override resetar(): void {
     this.submitted = false;
-    for (let i=0; i<5;i++)this.removeCampo();
+    //for (let i=0; i<5;i++)this.removeCampo();
     this.formulario.reset();
     this.numPedido();
   }
@@ -512,9 +457,18 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   onBeforeSave(): void {
     let url = window.location.hash.slice(2);
     if(this.formulario.valid) {
+      console.log(this.pedidosClientes)
       this.pedido = Object.entries(this.pedidosClientes);
       this.loopForTotais(this.vf, this.pedido)
       for (let i = 0; i < this.pedido.length; i++) {
+        /*if(this.pedido[i][0] === "itens") {
+          let descricao = this.pedidosClientes.itens[0].descricao;
+          let quantidade = this.pedidosClientes.itens[0].quantidade;
+          console.log(descricao)
+          console.log(quantidade)
+          this.formulario.get("quantidade")?.setValue(quantidade);
+          this.formulario.get("descricao")?.setValue(descricao);
+        }*/
         if(this.pedido[i][0].includes("valorFinal") && this.pedido[i][1] != null) {
           this.pedido[i][1] = this.pedido[i][1] + '';
           this.pedido[i][1] = parseFloat(this.pedido[i][1].replace(",", "."));
@@ -528,15 +482,16 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   submit() {
-    console.log(this.pedidosClientes)
     this.onBeforeSave();
     let save: any = document.querySelector('#salvar');
     let imp: any = document.querySelector('#imprimir');
 
+    console.log(this.pedidosClientes)
 
     if(this.formulario.valid) {
       this.crudService.save(this.pedidosClientes).subscribe({
-        next: () => {
+        next: (data: any) => {
+          console.log(data)
           this.submitted ? this.onSuccess() : this.onSuccessEdit();
         },
         error: () => {
