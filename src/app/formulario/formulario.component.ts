@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation, SimpleChanges, OnChanges} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {HttpClient} from "@angular/common/http";
@@ -14,7 +14,7 @@ import * as printJS from 'print-js';
   styleUrls: ['./formulario.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class FormularioComponent extends FormCadastroComponent implements OnInit, AfterViewInit, ChangeDetectorRef {
+export class FormularioComponent extends FormCadastroComponent implements OnInit, AfterViewInit, OnChanges, ChangeDetectorRef {
   checkNoChanges(): void {}
   detach(): void {}
   detectChanges(): void {}
@@ -65,6 +65,16 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
   ngAfterViewChecked(): void {
     this.changeDetectorRef.detectChanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Detecta mudanças no @Input pedidosClientes
+    if (changes['pedidosClientes'] && changes['pedidosClientes'].currentValue) {
+      const data = changes['pedidosClientes'].currentValue;
+      if (data.id) {
+        this.carregarDadosPedido(data);
+      }
+    }
   }
 
   override  ngOnInit(): void {
@@ -123,6 +133,60 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.itens.removeAt(index);
   }
 
+  carregarDadosPedido(data: any): void {
+    console.log('Carregando dados no formulário:', data);
+
+    // Converte o valorFinal
+    const valorFinal = typeof data.valorFinal === 'object' ? Number(data.valorFinal.parsedValue) : Number(data.valorFinal);
+
+    // Preencher campos principais
+    this.formulario.patchValue({
+      data: data.data,
+      numberPedido: data.numberPedido,
+      cliente: data.cliente,
+      telefone: data.telefone,
+      cep: data.cep || '',
+      cidade: data.cidade || '',
+      rua: data.rua || '',
+      numCasa: data.numCasa || '',
+      bairro: data.bairro || '',
+      complemento: data.complemento || '',
+      entrega_estimada: data.entrega_estimada || '',
+      pedidoRegistrado: data.pedidoRegistrado,
+      pedidoPago: data.pedidoPago,
+      pedidoRetirado: data.pedidoRetirado,
+      valorFinal: valorFinal
+    });
+
+    // Limpa o FormArray antes de preencher
+    this.itens.clear();
+
+    // Preenche o FormArray de itens
+    if (data.itens && Array.isArray(data.itens)) {
+      data.itens.forEach((item: any) => {
+        const totalItem = typeof item.total === 'object' ? Number(item.total.parsedValue) : Number(item.total);
+
+        const itemForm = this.fb.group({
+          id: [item.id || null],
+          descricao: [item.descricao, Validators.required],
+          quantidade: [item.quantidade, [Validators.required, Validators.min(1)]],
+          total: [totalItem, Validators.required],
+          retirada: [item.retirada ?? false]
+        });
+
+        this.itens.push(itemForm);
+      });
+    }
+
+    // Atualiza o pedidosClientes para outras funcionalidades
+    this.pedidosClientes = data;
+
+    // Atualiza o valor final calculado
+    this.calcularValorFinal();
+
+    // Força detecção de mudanças
+    this.changeDetectorRef.detectChanges();
+  }
 
   aplicaCssErroItem(index: number, campo: string) {
     const item = this.itens.at(index);
@@ -156,94 +220,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     );
   }
 
-  searchPedido() {
-    let dt = this.formulario.get('search')?.value;
-    this.arrPedidos = [];
-    dt = dt.toLowerCase();
-    this.crudService.list().subscribe((data) => {
-        data.forEach((e: any) => {
-          if(e.pedidoRetirado){
-            console.log(e);
-          }
-          if(e.retirada1 !== null || e.retirada1 > -1){
-            console.log(e);
-          }
-          let elm = e.cliente.toLowerCase();
-          if(elm.includes(dt) || e.numberPedido === dt || e.telefone === dt) {
-            this.arrPedidos.push(e);
-          }
-        });
-      },
-      error => {
-        if (error.status === 500) {
-          alert("Erro interno no servidor. Tente novamente mais tarde.");
-        } else {
-          alert("Erro inesperado: " + error.message);
-        }
-      }
-    )
-  }
-
-  onEdit(id: any): void {
-    this.crudService.findById(id).subscribe((data: any) => {
-      console.log('Dados recebidos:', data);
-
-      // Converte o valorFinal
-      const valorFinal = typeof data.valorFinal == 'object' ? Number(data.valorFinal.parsedValue) : data.valorFinal;
-
-      // Preencher campos principais
-      this.formulario.patchValue({
-        data: data.data,
-        numberPedido: data.numberPedido,
-        cliente: data.cliente,
-        telefone: data.telefone,
-        cep: data.cep,
-        cidade: data.cidade,
-        rua: data.rua,
-        numCasa: data.numCasa,
-        bairro: data.bairro,
-        complemento: data.complemento,
-        entrega_estimada: data.entrega_estimada,
-        pedidoRegistrado: data.pedidoRegistrado,
-        pedidoPago: data.pedidoPago,
-        pedidoRetirado: data.pedidoRetirado,
-        valorFinal: valorFinal
-      });
-
-      // Limpa o FormArray antes de preencher
-      this.itens.clear();
-
-      // Preenche o FormArray de itens
-      if (data.itens && Array.isArray(data.itens)) {
-        data.itens.forEach((item: any) => {
-          const totalItem = typeof item.total === 'object' ? Number(item.total.parsedValue) : item.total;
-
-          const itemForm = this.fb.group({
-            descricao: [item.descricao, Validators.required],
-            quantidade: [item.quantidade, [Validators.required, Validators.min(1)]],
-            total: [totalItem, Validators.required],
-            retirada: [item.retirada ?? false]
-          });
-
-          this.itens.push(itemForm);
-        });
-      }
-
-      // Atualiza o valor final calculado
-      this.calcularValorFinal();
-    });
-  }
-
-
-
-
-  onRemove(id: any) {
-    this.crudService.remove(id).subscribe(() => {
-      this._snackBar.open('PEDIDO REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
-      this.formulario.get('search');
-      this.searchPedido();
-    });
-  }
 
   consultarCliente(event: any) {
     let cliente = event.target?.value.toLowerCase();
@@ -548,25 +524,31 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   submit() {
     this.onBeforeSave();
 
-    console.log(this.pedidosClientes)
-
     if(this.formulario.valid) {
-      console.log('Dados do formulário:', this.formulario.value);
-      this.crudService.save(this.pedidosClientes).subscribe({
+      // Sincronizar formulário com pedidosClientes
+      const dadosAtualizados = {
+        ...this.pedidosClientes,     // Mantém ID e dados originais
+        ...this.formulario.value     // Sobrescreve com dados editados do formulário
+      };
+
+      console.log('Dados a serem enviados:', dadosAtualizados);
+
+      this.crudService.save(dadosAtualizados).subscribe({
         next: (data: any) => {
-          console.log(data)
+          console.log('Resposta do backend:', data);
           this.submitted ? this.onSuccess() : this.onSuccessEdit();
         },
-        error: () => {
-          this.onError()
+        error: (error) => {
+          console.error('Erro ao salvar:', error);
+          this.onError();
         },
         complete: () => {
           this.resetar();
           this.numPedido();
         }
-      })
+      });
     } else {
-      this._snackBar.open('FORMULARIO INVALIDO!!!', '', {duration: 5000})
+      this._snackBar.open('FORMULARIO INVALIDO!!!', '', {duration: 5000});
       this.formulario.markAllAsTouched();
     }
   }
