@@ -75,4 +75,21 @@ export class PesquisaComponent implements OnInit {
     });
   }
 
+  atualizarPedidoNaLista(pedidoAtualizado: any): void {
+    console.log('Atualizando pedido na lista:', pedidoAtualizado);
+
+    // Encontra o índice do pedido na lista
+    const index = this.arrPedidos.findIndex((p: any) => p.id === pedidoAtualizado.id);
+
+    if (index !== -1) {
+      // Atualiza o pedido na lista com os dados atualizados
+      this.arrPedidos[index] = pedidoAtualizado;
+
+      // Força a detecção de mudanças
+      this.changeDetectorRef.detectChanges();
+
+      console.log('Pedido atualizado na lista:', this.arrPedidos[index]);
+    }
+  }
+
 }

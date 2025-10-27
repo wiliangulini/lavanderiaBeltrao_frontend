@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation, SimpleChanges, OnChanges} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild, ViewEncapsulation, SimpleChanges, OnChanges} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {HttpClient} from "@angular/common/http";
@@ -25,6 +25,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @Input() pedidosClientes: any = {};
   @ViewChild('pedidoNum') pedidoNum: any;
   @Input() arrPedidos: any = [];
+  @Output() pedidoAtualizado = new EventEmitter<any>();
 
   vf: any = [];
   pedido: any = [];
@@ -490,6 +491,10 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.numPedido();
   }
 
+  // MÉTODO LEGADO - Desabilitado pois causava problema ao registrar novo pedido
+  // A lógica antiga tentava manipular pedidosClientes.itens[0] que não existe ao criar novo pedido
+  // O FormArray já gerencia corretamente os itens através do formulario.value
+  /*
   onBeforeSave(): void {
     let url = window.location.hash.slice(2);
     if(this.formulario.valid) {
@@ -497,14 +502,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       this.pedido = Object.entries(this.pedidosClientes);
       this.loopForTotais(this.vf, this.pedido)
       for (let i = 0; i < this.pedido.length; i++) {
-        /*if(this.pedido[i][0] === "itens") {
-          let descricao = this.pedidosClientes.itens[0].descricao;
-          let quantidade = this.pedidosClientes.itens[0].quantidade;
-          console.log(descricao)
-          console.log(quantidade)
-          this.formulario.get("quantidade")?.setValue(quantidade);
-          this.formulario.get("descricao")?.setValue(descricao);
-        }*/
         if(this.pedido[i][0].includes("valorFinal") && this.pedido[i][1] != null) {
           this.pedido[i][1] = this.pedido[i][1] + '';
           this.pedido[i][1] = parseFloat(this.pedido[i][1].replace(",", "."));
@@ -520,16 +517,21 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       delete this.pedidosClientes.search;
     }
   }
+  */
 
   submit() {
-    this.onBeforeSave();
-
     if(this.formulario.valid) {
-      // Sincronizar formulário com pedidosClientes
-      const dadosAtualizados = {
-        ...this.pedidosClientes,     // Mantém ID e dados originais
-        ...this.formulario.value     // Sobrescreve com dados editados do formulário
-      };
+      // Obter dados do formulário
+      const dadosFormulario = this.formulario.value;
+
+      // Para EDIÇÃO: mesclar com pedidosClientes (que contém o ID)
+      // Para NOVO PEDIDO: usar apenas dados do formulário
+      const dadosAtualizados = this.pedidosClientes?.id
+        ? { ...this.pedidosClientes, ...dadosFormulario }
+        : dadosFormulario;
+
+      // Remover campo 'search' se existir (não faz parte do modelo backend)
+      delete dadosAtualizados.search;
 
       console.log('Dados a serem enviados:', dadosAtualizados);
 
@@ -537,6 +539,11 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
         next: (data: any) => {
           console.log('Resposta do backend:', data);
           this.submitted ? this.onSuccess() : this.onSuccessEdit();
+
+          // Emitir evento para atualizar a lista no componente pai (somente em edição)
+          if (dadosAtualizados.id) {
+            this.pedidoAtualizado.emit(data);
+          }
         },
         error: (error) => {
           console.error('Erro ao salvar:', error);
