@@ -14,6 +14,8 @@ import {FormularioComponent} from "../formulario/formulario.component";
 })
 export class PedidosComponent extends FormularioComponent implements OnInit {
 
+  override showWhatsAppButton: boolean = true;
+
   constructor(
       FB: FormBuilder,
       HTTP: HttpClient,
@@ -27,10 +29,7 @@ export class PedidosComponent extends FormularioComponent implements OnInit {
 
   override ngOnInit(): void {
     let pag: any = window.location.href.split("/#/");
-    let btn: any = document.querySelector('.btn-whats');
-    if(pag[1] === 'registrar-pedido') {
-      btn.style.display = 'none';
-    }
+    this.showWhatsAppButton = pag[1] !== 'registrar-pedido';
   }
 
 

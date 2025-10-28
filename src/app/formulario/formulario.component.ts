@@ -24,8 +24,12 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @Input() numberPedido: any;
   @Input() pedidosClientes: any = {};
   @ViewChild('pedidoNum') pedidoNum: any;
+  @ViewChild('printJsForm', { static: false }) printJsForm: any;
+  @ViewChild('imprimirBtn', { static: false }) imprimirBtn: any;
   @Input() arrPedidos: any = [];
   @Output() pedidoAtualizado = new EventEmitter<any>();
+  @Input() showWhatsAppButton: boolean = true;
+  showImprimirButton: boolean = false;
 
   vf: any = [];
   pedido: any = [];
@@ -93,13 +97,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
     let url = window.location.hash.slice(2);
     console.log(url);
-    let imprimir: any = document.querySelector('#imprimir')!;
-    url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
-
-    let control: number = 0;
-    if(control === 0) {
-
-    }
+    this.showImprimirButton = url !== 'registrar-pedido';
   }
 
   // Calcula o valor total do pedido somando os totais dos itens
@@ -252,50 +250,6 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     }
   }
 
-  loopForTotais(valor: any, pedido: any, ) {
-    valor = [];
-    for (let i = 0; i < pedido.length; i++) {
-      if(pedido[i][0].includes("total") && pedido[i][1] != null) {
-        pedido[i][1] = pedido[i][1] + '';
-        pedido[i][1] = parseFloat(pedido[i][1].replace(",", "."));
-        pedido[i][1] =  parseFloat(pedido[i][1].toFixed(2));
-        pedido[i][0] === "total" ? valor.push(this.pedidosClientes.total = pedido[i][1])  : null;
-      }
-    }
-    return valor;
-  }
-
-
-  onChange(): void {
-    let total = 0;
-    let valorFinal: any;
-    let valf: any = []
-    let testeTotal: any = [];
-    this.pedido = Object.entries(this.pedidosClientes);
-    console.log(this.pedido);
-    this.pedido.forEach((e: any) => {
-      console.log(e);
-      if(e[0] === "itens") {
-        e[1].forEach((elm: any) => {
-          testeTotal.push(elm.total);
-        })
-      }
-    })
-    console.log(testeTotal);
-    valf = this.loopForTotais(valf, this.pedido);
-    console.log(valf);
-    for(let i=0; i<valf.length; i++) {
-      total += valf[i];
-    }
-    for(let i = 0; i < testeTotal.length; i++) {
-      total += testeTotal[i];
-    }
-    console.log(total);
-    valorFinal = total;
-    console.log(valorFinal);
-    console.log(typeof valorFinal);
-    this.formulario.get("valorFinal")?.setValue(valorFinal);
-  }
 
   formatarMoeda(e: any): void {
     console.log(e)
@@ -318,7 +272,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     switch (_iden) {
       case 'retirada':
         this.formulario.get('total')?.setValue(0);
-        this.onChange();
+        this.calcularValorFinal();
         break;
     }
   }
@@ -326,68 +280,53 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   msg: any;
 
   enviarPedidoCliente(pedido: any) {
-    // falta pegar numero de pecas e t de cada uma delas e o valor final
-    let t = 0;
-    let total: any;
-    let pedidoApiWhats: any = Object.entries(pedido);
-    let ds: any = [];
-    let qt: any = [];
-    let register: any = [];
-    let pag: any = [];
-    let retirado: any = [];
-    let status: any;
-    let totais: any = [];
-    let newmsg: any = [];
-    let pesagem: any = [];
-    let entrega_estimada: any = [];
-    let msg: any;
-    let msgEncode: any;
     let urlApi = "https://web.whatsapp.com/send";
     let celular: any = pedido.telefone;
-    //apenas numeros
+
+    // Apenas numeros
     celular = celular.replace(/\D/g,'');
-    //verificar ddi, add se n tiver;
+    // Verificar ddi, add se n tiver
     if(celular.length < 13){
       celular = "55" + celular;
     }
-    totais = this.loopForTotais(totais, pedidoApiWhats);
 
-    for(let i=0; i<totais.length; i++) t += totais[i];
+    // Calcular total e montar mensagem dos itens
+    let valorTotal = 0;
+    let itensMsg = '';
 
-    total = t.toFixed(2).replace(".", ",");
-    for (let i = 0; i < pedidoApiWhats.length; i++) {
-      if(pedidoApiWhats[i][0].includes("descricao") && pedidoApiWhats[i][1] !== null) ds.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("quantidade") && pedidoApiWhats[i][1] !== null) qt.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("pedidoRegistrado") && pedidoApiWhats[i][1] !== null) register.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("pedidoPago") && pedidoApiWhats[i][1] !== null) pag.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("pedidoRetirado") && pedidoApiWhats[i][1] !== null) retirado.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("retirada") && pedidoApiWhats[i][1] !== null) pesagem.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("entrega_estimada") && pedidoApiWhats[i][1] !== null) entrega_estimada.push(pedidoApiWhats[i][1]);
+    if (pedido.itens && Array.isArray(pedido.itens)) {
+      pedido.itens.forEach((item: any) => {
+        const totalItem = Number(item.total) || 0;
+        valorTotal += totalItem;
+
+        if (item.retirada && totalItem === 0) {
+          itensMsg += `\n${item.quantidade} ${item.descricao} = R$ ${totalItem.toFixed(2).replace(".", ",")}** pesagem na retirada, valor final irá mudar`;
+        } else {
+          itensMsg += `\n${item.quantidade} ${item.descricao} = R$ ${totalItem.toFixed(2).replace(".", ",")}`;
+        }
+      });
     }
 
-    for(let i=0; i<ds.length; i++) {
-      if(pesagem[i] && totais[i] === 0) {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",")+'** pesagem na retirada, valor final irá mudar';
-      } else {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",");
-      }
-    }
-    console.log(newmsg)
+    const total = valorTotal.toFixed(2).replace(".", ",");
 
-    if(register[0] && pag[0] && retirado[0]) {
+    // Determinar status
+    let status: string;
+    if(pedido.pedidoRegistrado && pedido.pedidoPago && pedido.pedidoRetirado) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
-      // se o pedido foi pago e retirado pelo cliente ele ja pode ser excluido do banco de dados
-      console.log(status);
-    } else if(register[0] && pag[0]) {
+    } else if(pedido.pedidoRegistrado && pedido.pedidoPago) {
       status = 'Pedido Registrado e Pago;';
-    } else if(register[0]) {
+    } else if(pedido.pedidoRegistrado) {
       status = 'Pedido Registrado;';
-    } else if(pag[0]) {
+    } else if(pedido.pedidoPago) {
       status = 'Pedido Pago;';
+    } else {
+      status = 'Aguardando registro;';
     }
 
-    msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + '\n' + newmsg + "\n\nEstimativa de Entrega: " + entrega_estimada +";" + "\n\nTotal: R$ " + total + "\n\nStatus: " + status + "\n\nObs: não seguramos mercadoria mais de 60 dias!!!";
-    msgEncode = window.encodeURIComponent(msg);
+    const msg = `Lavanderia Beltrão.\n\nCliente: ${pedido.cliente};\nNúmero do pedido: #${pedido.numberPedido}\n\nDescrição do pedido: ${itensMsg}\n\nEstimativa de Entrega: ${pedido.entrega_estimada || 'A definir'};\n\nTotal: R$ ${total}\n\nStatus: ${status}\n\nObs: não seguramos mercadoria mais de 60 dias!!!`;
+
+    const msgEncode = window.encodeURIComponent(msg);
+
     if(this.mobileCheck()){
       urlApi = "https://api.whatsapp.com/send";
     }
@@ -396,66 +335,46 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   imprimir(pedido: any) {
     console.log(pedido)
-    let t = 0;
-    let total: any;
-    let pedidoImpresso: any = Object.entries(pedido);
-    console.log(pedidoImpresso)
-    let ds: any = [];
-    let qt: any = [];
-    let register: any = [];
-    let pag: any = [];
-    let retirado: any = [];
-    let status: any;
-    let totais: any = [];
-    let newmsg: any = [];
-    let pesagem: any = [];
-    let entrega_estimada: any = [];
-    let celular: any = pedido.telefone;
-    //apenas numeros
-    celular = celular!.replace(/\D/g,'');
-    //verificar ddi, add se n tiver;
-    if(celular.length < 13) celular = "55" + celular;
-    console.log(celular);
-    totais = this.loopForTotais(totais, pedidoImpresso);
 
-    for(let i=0; i<totais.length; i++) t += totais[i];
+    // Calcular total e montar mensagem dos itens
+    let valorTotal = 0;
+    let itensMsg = '';
 
-    total = t.toFixed(2).replace(".", ",");
-    for (let i = 0; i < pedidoImpresso.length; i++) {
-      if(pedidoImpresso[i][0].includes("descricao") && pedidoImpresso[i][1] !== null) ds.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("quantidade") && pedidoImpresso[i][1] !== null) qt.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("pedidoRegistrado") && pedidoImpresso[i][1] !== null) register.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("pedidoPago") && pedidoImpresso[i][1] !== null) pag.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("pedidoRetirado") && pedidoImpresso[i][1] !== null) retirado.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("retirada") && pedidoImpresso[i][1] !== null) pesagem.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("entrega_estimada") && pedidoImpresso[i][1] !== null) entrega_estimada.push(pedidoImpresso[i][1]);
+    if (pedido.itens && Array.isArray(pedido.itens)) {
+      pedido.itens.forEach((item: any) => {
+        const totalItem = Number(item.total) || 0;
+        valorTotal += totalItem;
+
+        if (item.retirada && totalItem === 0) {
+          itensMsg += `\n${item.quantidade} ${item.descricao} = R$ ${totalItem.toFixed(2).replace(".", ",")}** pesagem na retirada, valor final irá mudar`;
+        } else {
+          itensMsg += `\n${item.quantidade} ${item.descricao} = R$ ${totalItem.toFixed(2).replace(".", ",")}`;
+        }
+      });
     }
 
-    for(let i=0; i<ds.length; i++) {
-      if(pesagem[i] && totais[i] === 0) {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",")+'** pesagem na retirada, valor final irá mudar';
-      } else {
-        newmsg += "\n" + qt[i] + " " + ds[i] + " = " + "R$ " + totais[i].toFixed(2).replace(".", ",");
-      }
-    }
-    console.log(newmsg)
+    const total = valorTotal.toFixed(2).replace(".", ",");
 
-    if(register[0] && pag[0] && retirado[0]) {
+    // Determinar status
+    let status: string;
+    if(pedido.pedidoRegistrado && pedido.pedidoPago && pedido.pedidoRetirado) {
       status = 'Pedido Registrado, Pago e Retirado pelo cliente;';
-    } else if(register[0] && pag[0]) {
+    } else if(pedido.pedidoRegistrado && pedido.pedidoPago) {
       status = 'Pedido Registrado e Pago;';
-    } else if(register[0]) {
+    } else if(pedido.pedidoRegistrado) {
       status = 'Pedido Registrado;';
-    } else if(pag[0]) {
+    } else if(pedido.pedidoPago) {
       status = 'Pedido Pago;';
+    } else {
+      status = 'Aguardando registro;';
     }
 
-    let textarea: any = document.querySelector('#printJS-form');
-    textarea.classList.add('d-flex');
-    textarea.classList.remove('d-none');
-    console.log(textarea)
+    if (this.printJsForm) {
+      this.printJsForm.nativeElement.classList.add('d-flex');
+      this.printJsForm.nativeElement.classList.remove('d-none');
+    }
 
-    this.msg = "Lavanderia Beltrão.\n\nCliente: " + pedido.cliente +";"+ "\nNúmero do pedido: #" + pedido.numberPedido + "\n\nDescrição do pedido: " + '\n' + newmsg + "\n\nEstimativa de Entrega: " + entrega_estimada +";" + "\n\nTotal: R$ " + total + "\n\nStatus: " + status;
+    this.msg = `Lavanderia Beltrão.\n\nCliente: ${pedido.cliente};\nNúmero do pedido: #${pedido.numberPedido}\n\nDescrição do pedido: ${itensMsg}\n\nEstimativa de Entrega: ${pedido.entrega_estimada || 'A definir'};\n\nTotal: R$ ${total}\n\nStatus: ${status}`;
 
     console.log(this.msg)
 
@@ -463,17 +382,18 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       printJS({
         printable: 'printJS-form',
         type: 'html',
-        header: 'Lavanderia Beltrão',  // Cabeçalho opcional
+        header: 'Lavanderia Beltrão',
         style: '#printJS-form { border: 0; padding: 20px 0 0 20px; }'
       });
     }, 500);
 
     setTimeout(() => {
-      textarea.classList.add('d-none');
-      textarea.classList.remove('d-flex');
-      textarea.innerHTML = '';
+      if (this.printJsForm) {
+        this.printJsForm.nativeElement.classList.add('d-none');
+        this.printJsForm.nativeElement.classList.remove('d-flex');
+        this.printJsForm.nativeElement.innerHTML = '';
+      }
     }, 2000);
-
   }
 
 
@@ -486,38 +406,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   override resetar(): void {
     this.submitted = false;
-    //for (let i=0; i<5;i++)this.removeCampo();
     this.formulario.reset();
     this.numPedido();
   }
-
-  // MÉTODO LEGADO - Desabilitado pois causava problema ao registrar novo pedido
-  // A lógica antiga tentava manipular pedidosClientes.itens[0] que não existe ao criar novo pedido
-  // O FormArray já gerencia corretamente os itens através do formulario.value
-  /*
-  onBeforeSave(): void {
-    let url = window.location.hash.slice(2);
-    if(this.formulario.valid) {
-      console.log(this.pedidosClientes)
-      this.pedido = Object.entries(this.pedidosClientes);
-      this.loopForTotais(this.vf, this.pedido)
-      for (let i = 0; i < this.pedido.length; i++) {
-        if(this.pedido[i][0].includes("valorFinal") && this.pedido[i][1] != null) {
-          this.pedido[i][1] = this.pedido[i][1] + '';
-          this.pedido[i][1] = parseFloat(this.pedido[i][1].replace(",", "."));
-          this.pedido[i][1] =  parseFloat(this.pedido[i][1].toFixed(2));
-          this.pedido[i][0] === "valorFinal" ? this.formulario.get('valorFinal')?.setValue(this.pedido[i][1]) : null;
-        }
-      }
-      url == 'registrar-pedido' ? this.pedidosClientes = this.formulario.value : this.pedidosClientes;
-      this.pedidosClientes.itens[0].quantidade = this.pedidosClientes.quantidade;
-      this.pedidosClientes.itens[0].descricao = this.pedidosClientes.descricao;
-      delete this.pedidosClientes.quantidade;
-      delete this.pedidosClientes.descricao;
-      delete this.pedidosClientes.search;
-    }
-  }
-  */
 
   submit() {
     if(this.formulario.valid) {

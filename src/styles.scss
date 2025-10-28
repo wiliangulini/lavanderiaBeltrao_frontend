@@ -1,47 +1,100 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================
+   LAVANDERIA BELTRÃO - STYLES
+   Com Bootstrap
+   ========================================== */
+
+/* 1. Import Bootstrap */
+@import '~bootstrap/scss/bootstrap';
+
+/* 2. Bootstrap Icons (opcional) */
+// @import '~bootstrap-icons/font/bootstrap-icons.css';
+
+/* 3. Global Styles Customizados */
 body {
   background-color: #1b1e1f !important;
 }
-.w-90 {
-  width: 90% !important;
+
+h1 {
+  color: #fff;
+  font-weight: bold !important;
+  text-align: center;
+  margin-bottom: 2% !important;
 }
+
+input {
+  height: 50px;
+}
+
+/* 4. Angular Material Overrides */
+.mat-snack-bar-container {
+  background-color: #0380dd !important;
+}
+
+.mat-simple-snackbar {
+  justify-content: center !important;
+}
+
+/* 5. Form Customizations */
 .form-control {
   border-width: 2.5px !important;
   border-radius: 8px !important;
   font-size: 20px !important;
 }
+
 .form-label {
-  color: #FFF;
+  color: #fff;
   font-size: 23px;
 }
-td.second {
-  padding: 0 1rem 0 1rem !important;
-}
-td.first, td.last {
-  padding: 0 !important;
-}
+
+/* 6. Table Customizations */
 .table > :not(caption) > * > * {
   border: 0 !important;
 }
+
 tr th {
-  color: #FFF;
+  color: #fff;
   font-size: 23px;
   font-weight: bold;
 }
-h1 {
-  color: #FFF;
-  font-weight: bold !important;
-  text-align: center;
-  margin-bottom: 2% !important;
+
+tbody tr td {
+  color: #fff;
+  font-size: 20px;
 }
-input {
+
+td.first,
+td.last {
+  padding: 0 !important;
+}
+
+td.second {
+  padding: 0 1rem !important;
+}
+
+/* 7. Width Utilities */
+.w-90 {
+  width: 90% !important;
+}
+
+/* 8. Custom Components */
+.btn-whats {
+  background-color: #38b553;
+  border-radius: 50%;
+  width: 50px;
   height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
 }
-.mat-snack-bar-container {
-  background-color: #0380dd !important;
+
+.btn-whats:hover {
+  background-color: #2d9644;
 }
-.mat-simple-snackbar {
-  justify-content: center !important;
+
+.card {
+  background-color: transparent;
+  box-shadow: 1px 1px 10px 1px #fff;
+  padding: 1%;
+  margin: 3% 0;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

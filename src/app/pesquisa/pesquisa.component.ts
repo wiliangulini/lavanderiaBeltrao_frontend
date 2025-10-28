@@ -1,26 +1,27 @@
 import {DataCrudService} from '../shared/services/data-crud.service';
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder} from '@angular/forms';
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormularioComponent} from "../formulario/formulario.component";
-import {HttpClient} from "@angular/common/http";
+import {debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-pesquisa',
   templateUrl: './pesquisa.component.html',
   styleUrls: ['./pesquisa.component.scss']
 })
-export class PesquisaComponent implements OnInit {
+export class PesquisaComponent implements OnInit, OnDestroy {
 
   @ViewChild(FormularioComponent) formularioChild!: FormularioComponent;
 
   formulario: any;
   arrPedidos: any = [];
+  private searchSubject$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private crudService: DataCrudService,
     private cepService: ConsultaCepService,
     private _snackBar: MatSnackBar,
@@ -31,30 +32,35 @@ export class PesquisaComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
-
-  searchPedido() {
-    let dt = this.formulario.get('search')?.value;
-    this.arrPedidos = [];
-    if (!dt) return;
-
-    dt = dt.toLowerCase();
-    this.crudService.list().subscribe((data) => {
-        data.forEach((e: any) => {
-          let elm = e.cliente.toLowerCase();
-          if(elm.includes(dt) || e.numberPedido == dt || e.telefone == dt) {
-            this.arrPedidos.push(e);
-          }
-        });
+  ngOnInit(): void {
+    // Configurar debounce para a busca
+    this.searchSubject$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(query => this.crudService.searchPedidos(query)),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (data) => {
+        this.arrPedidos = data;
       },
-      error => {
+      error: (error) => {
         if (error.status === 500) {
           alert("Erro interno no servidor. Tente novamente mais tarde.");
         } else {
           alert("Erro inesperado: " + error.message);
         }
       }
-    );
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  searchPedido() {
+    const query = this.formulario.get('search')?.value || '';
+    this.searchSubject$.next(query);
   }
 
   onEdit(id: any): void {

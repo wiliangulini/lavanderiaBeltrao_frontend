@@ -20,6 +20,12 @@ export class DataCrudService {
     return this.http.get<PedidosClientes[]>(this.pedidosAPI)
   }
 
+  searchPedidos(query: string) {
+    return this.http.get<PedidosClientes[]>(`${this.pedidosAPI}/search`, {
+      params: { query }
+    }).pipe(take(1));
+  }
+
   findById(id: any) {
     return this.http.get(`${this.pedidosAPI}/${id}`).pipe(
       delay(500),

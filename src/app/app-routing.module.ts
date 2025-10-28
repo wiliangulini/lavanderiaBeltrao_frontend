@@ -1,19 +1,28 @@
-import {EditarComponent} from './editar/editar.component';
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {BuscaCepComponent} from './busca-cep/busca-cep.component';
-import {CadastroComponent} from './cadastro/cadastro.component';
-
-import {PedidosComponent} from './pedidos/pedidos.component';
-import {PesquisaComponent} from './pesquisa/pesquisa.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  {path: '', redirectTo: '/registrar-pedido', pathMatch: 'full' },
-  {path: 'registrar-pedido', component: PedidosComponent },
-  {path: 'pesquisar-pedido', component: PesquisaComponent },
-  {path: 'cadastrar-clientes', component: CadastroComponent },
-  {path: 'buscar-cep', component: BuscaCepComponent },
-  {path: 'editar-clientes', component: EditarComponent },
+  { path: '', redirectTo: '/registrar-pedido', pathMatch: 'full' },
+  {
+    path: 'registrar-pedido',
+    loadChildren: () => import('./pedidos/pedidos.module').then(m => m.PedidosModule)
+  },
+  {
+    path: 'pesquisar-pedido',
+    loadChildren: () => import('./pesquisa/pesquisa.module').then(m => m.PesquisaModule)
+  },
+  {
+    path: 'cadastrar-clientes',
+    loadChildren: () => import('./cadastro/cadastro.module').then(m => m.CadastroModule)
+  },
+  {
+    path: 'buscar-cep',
+    loadChildren: () => import('./busca-cep/busca-cep.module').then(m => m.BuscaCepModule)
+  },
+  {
+    path: 'editar-clientes',
+    loadChildren: () => import('./editar/editar.module').then(m => m.EditarModule)
+  }
 ];
 
 @NgModule({
