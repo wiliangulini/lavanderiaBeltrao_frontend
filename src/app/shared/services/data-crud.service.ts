@@ -1,7 +1,7 @@
 import { Clientes } from '../clientes';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {delay, first, take} from 'rxjs';
+import {delay, first, take, Observable} from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { PedidosClientes } from '../pedidos-clientes';
@@ -22,7 +22,7 @@ export class DataCrudService {
 
   findById(id: any) {
     return this.http.get(`${this.pedidosAPI}/${id}`).pipe(
-      delay(500),
+      // delay(500),  // REMOVIDO: delay artificial
       take(1)
       );
   }
@@ -52,7 +52,7 @@ export class DataCrudService {
 
   findByIdClient(id: any) {
     return this.http.get(`${this.clientesAPI}/${id}`).pipe(
-      delay(1000),
+      // delay(1000),  // REMOVIDO: delay artificial
       take(1)
     );
   }
@@ -77,5 +77,26 @@ export class DataCrudService {
 
   removeClient(id: any) {
     return this.http.delete(`${this.clientesAPI}/${id}`).pipe(first());
+  }
+
+  // NOVO: Método otimizado para obter próximo número de pedido
+  getNextPedidoNumber(): Observable<number> {
+    return this.http.get<number>(`${this.pedidosAPI}/next-number`).pipe(
+      take(1)
+    );
+  }
+
+  // NOVO: Método de busca de pedidos com filtro server-side
+  searchPedidos(query: string): Observable<PedidosClientes[]> {
+    return this.http.get<PedidosClientes[]>(`${this.pedidosAPI}/search`, {
+      params: { query }
+    }).pipe(take(1));
+  }
+
+  // NOVO: Método de busca de clientes com filtro server-side
+  searchClientes(query: string): Observable<Clientes[]> {
+    return this.http.get<Clientes[]>(`${this.clientesAPI}/search`, {
+      params: { query }
+    }).pipe(take(1));
   }
 }

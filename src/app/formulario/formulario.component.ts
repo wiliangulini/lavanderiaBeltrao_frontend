@@ -86,9 +86,11 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       textarea: [],
     });
   }
-  ngAfterViewChecked(): void {
-    this.changeDetectorRef.detectChanges();
-  }
+
+  // REMOVIDO: ngAfterViewChecked() causava change detection excessivo
+  // ngAfterViewChecked(): void {
+  //   this.changeDetectorRef.detectChanges();
+  // }
 
   override  ngOnInit(): void {}
 
@@ -106,34 +108,24 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   numPedido() {
-    let num: any = [];
-    this.crudService.list().subscribe((data: any) => {
-      data.forEach((e: any) => {
-        num.push(e.numberPedido)
-      });
-      if(num.length == 0) {
-        this.np = 1;
-      } else {
-        num = num.sort((a: any, b: any) => a - b)
-        this.np = num.pop();
-        this.np++;
-      }
+    // OTIMIZADO: Usa endpoint dedicado que retorna apenas o próximo número
+    this.crudService.getNextPedidoNumber().subscribe((nextNumber: number) => {
+      this.np = nextNumber;
       this.formulario.get('numberPedido')?.setValue(this.np);
     });
   }
 
   searchPedido() {
-    let dt = this.formulario.get('search')?.value;
-    this.arrPedidos = [];
-    dt = dt.toLowerCase();
-    this.crudService.list().subscribe((data) =>{
-      data.forEach((e: any) => {
-        let elm = e.cliente.toLowerCase();
-        if(elm.includes(dt) || e.numberPedido === dt || e.telefone === dt) {
-          this.arrPedidos.push(e);
-        }
-      });
-    })
+    // OTIMIZADO: Usa endpoint de busca server-side
+    const query = this.formulario.get('search')?.value;
+    if (!query || query.trim().length === 0) {
+      this.arrPedidos = [];
+      return;
+    }
+
+    this.crudService.searchPedidos(query.trim()).subscribe((data: any[]) => {
+      this.arrPedidos = data;
+    });
   }
 
   onEdit(id: any) {
@@ -178,33 +170,20 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   consultarCliente(event: any) {
-    let cliente = event.target?.value.toLowerCase();
-    console.log(cliente);
-    if(cliente != null && cliente.length >= 3) {
-      this.crudService.listClient().subscribe((data) => {
-        data.forEach((e: any) => {
-          console.log(e);
-          let elm = e.cliente.toLowerCase();
-          console.log(elm);
-          let n = elm.indexOf(' ');
-          console.log(n);
-          let name = elm.slice(0, n);
-          console.log(name);
-          let mid = elm.slice(n+1);
-          let md = mid.indexOf(' ');
-          let midName = mid.slice(0, md);
-          let lastName = mid.slice(md+1);
-          console.log(midName);
-          console.log(lastName);
-          if((elm == cliente || name == cliente || midName == cliente || lastName == cliente) && this.pedidosClientes.pedidoRegistrado) {
-            console.log(elm, cliente, name.includes(cliente))
-            this.pedidosClientes = e;
-            this.formulario.get('pedidoRegistrado')?.setValue(true);
-            console.log(this.pedidosClientes)
-          }
-        });
-      })
+    // OTIMIZADO: Usa endpoint de busca server-side
+    const cliente = event.target?.value;
+    if (!cliente || cliente.trim().length < 3) {
+      return;
     }
+
+    this.crudService.searchClientes(cliente.trim()).subscribe((data: any[]) => {
+      if (data && data.length > 0 && this.pedidosClientes.pedidoRegistrado) {
+        const match = data[0]; // Pega o primeiro resultado
+        this.pedidosClientes = match;
+        this.formulario.get('pedidoRegistrado')?.setValue(true);
+        console.log(this.pedidosClientes);
+      }
+    });
   }
 
   loopForTotais(valor: any, pedido: any, ) {
