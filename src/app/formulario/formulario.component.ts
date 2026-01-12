@@ -55,7 +55,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       bairro: [],
       complemento: [],
       entrega_estimada: [],
-      quantidade: [null, [Validators.required]],
+      quantidade: [],
       descricao: [null, [Validators.required]],
       total: [],
       retirada: [],

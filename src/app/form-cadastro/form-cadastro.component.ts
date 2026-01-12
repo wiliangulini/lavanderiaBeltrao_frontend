@@ -56,15 +56,22 @@ export abstract class FormCadastroComponent implements OnInit {
 
   consultarCep(e: any) {
     let CEP = e.target.value;
+    const originalCep = CEP;
+
     this.cepService.consultaCEP(CEP).subscribe((data: any) => {
-      let ret = data;
-      this.formulario.patchValue({
-        cep: ret.cep,
-        cidade: ret.localidade,
-        rua: ret.logradouro,
-        bairro: ret.bairro,
-        complemento: ret.complemento
-      })
+      if (data && data.cep && !data.erro) {
+        this.formulario.patchValue({
+          cep: data.cep,
+          cidade: data.localidade,
+          rua: data.logradouro,
+          bairro: data.bairro,
+          complemento: data.complemento
+        });
+      } else {
+        this.formulario.patchValue({
+          cep: originalCep
+        });
+      }
     })
   }
 }
