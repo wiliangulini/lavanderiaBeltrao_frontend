@@ -19,12 +19,14 @@
       <input
         required
         id="telefone"
-        type="number"
+        type="tel"
         class="form-control"
         placeholder="Telefone"
         formControlName="telefone"
         [(ngModel)]="pedidosClientes.telefone"
         [ngClass]="aplicaCssErro('telefone')"
+        pattern="[0-9]{10,12}"
+        maxlength="12"
       >
       <app-error-msg [control]="$any(formulario).get('telefone')" label="Telefone"></app-error-msg>
     </div>
