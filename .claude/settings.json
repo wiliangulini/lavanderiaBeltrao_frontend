@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git log:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npx ng build:*)",
+      "Bash(npx ng test:*)",
+      "Read",
+      "Grep",
+      "Glob",
+      "LS"
+    ],
+    "ask": [
+      "Edit",
+      "MultiEdit",
+      "Write",
+      "Bash(npm install:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm start:*)",
+      "Bash(npm run watch:*)",
+      "Bash(npx ng serve:*)",
+      "Bash(npx ng generate:*)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Read(**/secrets/**)",
+      "Read(**/*secret*)",
+      "Read(**/*token*)",
+      "Read(.claude/settings.local.json)",
+      "Edit(.env*)",
+      "Edit(**/.env*)",
+      "Edit(.claude/settings.local.json)",
+      "Write(.claude/settings.local.json)",
+      "Bash(rm:*)",
+      "Bash(sudo:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(git reset:*)",
+      "Bash(git clean:*)",
+      "Bash(git push:*)",
+      "Bash(git rebase:*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(firebase:*)",
+      "Bash(npx firebase:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker-compose:*)"
+    ]
+  },
+  "defaultMode": "plan",
+  "disableBypassPermissionsMode": true
+}

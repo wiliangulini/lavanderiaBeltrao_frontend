@@ -45,3 +45,13 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+# --- IA agent config (Claude Code / Codex) ---
+# Permissões locais/pessoais do Claude Code (nunca versionar)
+.claude/settings.local.json
+# Área temporária de trabalho de IA
+_tmp/
+# Variáveis de ambiente / secrets locais
+.env
+.env.*
+!.env.example

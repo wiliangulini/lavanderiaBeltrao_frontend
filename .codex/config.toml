@@ -1,0 +1,10 @@
+# Codex — configuração do frontend Lavanderia Beltrão
+# Ajuste conforme a política real do projeto. Não sobrepõe as regras do Claude Code.
+
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "cached"
+
+# Codex deve tratar estes arquivos como contexto de projeto (ler PROJECT_RULES primeiro).
+project_doc_fallback_filenames = ["PROJECT_RULES.md", "AGENTS.md", "CODEX.md"]
