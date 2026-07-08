@@ -30,7 +30,7 @@ Não leia `package-lock.json`, `node_modules` ou relatórios antigos sem necessi
 
 - **Command**: iniciar tarefa concreta (implementar, revisar, depurar, refatorar, auditar, decidir arquitetura, revisar UI Angular, revisar integração com a API).
 - **Skill**: metodologia (planejar, refatorar com segurança, manutenção Angular, integração com API).
-- **Rule**: domínio sensível (stack Angular, componentes/serviços, UI Bootstrap/Material, integração/proxy, segurança, fluxo de pedidos).
+- **Rule**: domínio sensível (stack Angular, componentes/serviços, UI Bootstrap/Material, integração/proxy, segurança, fluxo de pedidos, raciocínio/decisão arquitetural). As rules em `.claude/rules/` valem para Claude Code e Codex — mesmo critério para os dois.
 
 Pares command↔skill (`create-code`↔`senior-code-agent`, `implementation-plan`↔`implementation-planning`, `architecture-decision`↔`architecture-review`): command é a entrada, skill é o método; não repita conteúdo.
 

@@ -5,7 +5,8 @@ description: Método para avaliar decisões arquiteturais na SPA Angular 14 lega
 
 # architecture-review
 
-Metodologia de avaliação arquitetural (entrada via command `architecture-decision`).
+Metodologia de avaliação arquitetural (entrada via command `architecture-decision`). Critério de
+pattern vs simplicidade e reversível vs irreversível: rule `raciocinio-e-arquitetura`.
 
 ## Verificar
 - Coerência com a stack atual (Angular 14 NgModule, Reactive Forms, Bootstrap 5 + Material 14, roteamento hash, RxJS).

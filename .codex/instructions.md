@@ -22,6 +22,9 @@ Não sobreponha as regras definidas para o Claude Code; elas valem para todos os
 | Migração de stack (standalone/signals/major) | Crítico | Não fazer sem autorização. |
 
 ## Antes de editar
+- Escolha técnica relevante (pattern, abstração, refatoração ampla)? Use o mesmo critério do
+  Claude Code: `.claude/rules/raciocinio-e-arquitetura.md` (pattern vs simplicidade, reversível vs
+  irreversível → ADR).
 - Não inventar rotas, componentes, serviços, endpoints ou campos JSON.
 - Declarar novos componentes no `AppModule`; manter roteamento hash.
 - Reutilizar serviços existentes; não criar `HttpClient` paralelo.

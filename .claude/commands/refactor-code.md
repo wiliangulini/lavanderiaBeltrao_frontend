@@ -4,7 +4,7 @@ description: Refatoração segura sem mudança de comportamento (frontend)
 
 # refactor-code
 
-Use só para melhorar estrutura mantendo comportamento. Metodologia: skill `safe-refactor`.
+Use só para melhorar estrutura mantendo comportamento. Metodologia: skill `safe-refactor`. Para distinguir melhoria real de overengineering antes de ampliar o escopo: rule `raciocinio-e-arquitetura`.
 
 ## Regras
 - Preservar rotas (hash), seletores de componentes e a API pública dos serviços.

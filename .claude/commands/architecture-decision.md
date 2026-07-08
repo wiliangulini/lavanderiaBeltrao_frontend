@@ -4,7 +4,7 @@ description: Registro de decisão arquitetural (frontend)
 
 # architecture-decision
 
-Use quando a tarefa envolver escolha técnica relevante (ex.: centralizar URL da API, adotar interceptors, extrair módulo compartilhado, padronizar tratamento de erro HTTP, migrar roteamento hash→path). Metodologia: skill `architecture-review`.
+Use quando a tarefa envolver escolha técnica relevante (ex.: centralizar URL da API, adotar interceptors, extrair módulo compartilhado, padronizar tratamento de erro HTTP, migrar roteamento hash→path). Metodologia: skill `architecture-review`. Critério de reversibilidade e de quando NÃO aplicar um pattern: rule `raciocinio-e-arquitetura`.
 
 ## Responder
 - problema e contexto real (Angular 14 NgModule, Reactive Forms, Bootstrap 5 + Material 14, roteamento hash, integração via `environment` absoluto + `proxy.conf.js` subutilizado);

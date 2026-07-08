@@ -116,6 +116,11 @@ Não repita este arquivo nos demais. Não cole `package-lock.json`/`node_modules
 
 Ao concluir: objetivo; arquivos alterados; decisões; validações executadas; validações não executadas; riscos; próximos passos.
 
+Use sempre um destes rótulos para cada item (não misturar): **feito** (implementado e validado),
+**não feito** (fora do escopo desta tarefa ou pendente), **não testado** (implementado, validação
+não executada — declare o motivo), **não confirmado no projeto** (não há evidência no código para
+afirmar ou negar).
+
 ## 14. Precedência documental
 
 1. `PROJECT_RULES.md` → 2. `AGENTS.md` → 3. `CLAUDE.md`/`CODEX.md` → 4. `.claude/rules/` e `.codex/instructions.md` → 5. commands/skills → 6. `docs/`. Em conflito, seguir o de maior prioridade e registrar o conflito.

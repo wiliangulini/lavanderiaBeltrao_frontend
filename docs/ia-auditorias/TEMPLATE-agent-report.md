@@ -31,6 +31,9 @@ npm test   # se aplicável
 ```
 Resultado: <sucesso | falha | não executado>
 
+Rótulos padrão para qualquer item deste relatório: **feito** | **não feito** | **não testado** |
+**não confirmado no projeto** (ver `PROJECT_RULES.md §13`).
+
 ## 7. Validações não executadas
 - <validação> — <motivo>
 

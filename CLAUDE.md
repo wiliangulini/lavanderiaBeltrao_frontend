@@ -23,7 +23,7 @@ Agente sênior de planejamento, implementação controlada, revisão, auditoria,
 
 ## 5. Rules (`.claude/rules/`)
 
-Sob demanda: `stack-frontend-angular`, `angular-components-services`, `ui-ux-bootstrap-material`, `integracao-api-proxy`, `seguranca-frontend`, `fluxo-pedidos-relatorios`.
+Sob demanda: `stack-frontend-angular`, `angular-components-services`, `ui-ux-bootstrap-material`, `integracao-api-proxy`, `seguranca-frontend`, `fluxo-pedidos-relatorios`, `raciocinio-e-arquitetura` (pattern vs simplicidade, reversível vs irreversível, quando abrir ADR).
 
 ## 6. Segurança (reforço)
 
