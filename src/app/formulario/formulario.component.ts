@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {ConsultaCepService} from "../shared/services/consulta-cep.service";
 import {HttpClient} from "@angular/common/http";
@@ -15,7 +15,7 @@ import {empty} from "rxjs";
   styleUrls: ['./formulario.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class FormularioComponent extends FormCadastroComponent implements OnInit, AfterViewInit, ChangeDetectorRef {
+export class FormularioComponent extends FormCadastroComponent implements OnInit, AfterViewInit, OnChanges, ChangeDetectorRef {
   checkNoChanges(): void {}
   detach(): void {}
   detectChanges(): void {}
@@ -26,12 +26,24 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   @Input() pedidosClientes: any = {};
   @ViewChild('pedidoNum') pedidoNum: any;
   @Input() arrPedidos: any = [];
+  // PesquisaComponent estende FormularioComponent (herda arrPedidos/searchPedido
+  // com seu proprio estado) e AINDA ASSIM embute <app-formulario> como filho
+  // separado para o formulario de edicao - quem salva de fato eh o filho, mas
+  // quem renderiza a lista visivel eh o pai. Emitir aqui e o pai escutar
+  // (pedidoEditado)="searchPedido()" e como a lista do pai fica sincronizada.
+  @Output() pedidoEditado = new EventEmitter<void>();
 
   vf: any = [];
   pedido: any = [];
   d: number = 0;
   classField: any;
   test: any;
+
+  // Visibilidade de cada slot extra (product1..product5) - indice 0..4 = slot 1..5.
+  // Substitui o antigo indice unico (this.i) usado como pilha, que ficava
+  // dessincronizado sempre que onEdit() revelava slots direto no DOM sem
+  // atualizar this.i (causa raiz do bug "precisa adicionar antes de excluir").
+  slotsVisiveis: boolean[] = [false, false, false, false, false];
 
   constructor(
     protected fb: FormBuilder,
@@ -95,16 +107,23 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   override  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    let pes = document.getElementById('pesquisa');
+    // setTimeout(0): adia estas mutacoes para depois do primeiro ciclo de
+    // change detection. Sem isso, setValue()/atribuicoes sincronas aqui
+    // disparam NG0100 (ExpressionChangedAfterItHasBeenCheckedError), pois
+    // mudam valores lidos no template (via formControlName/ngModel) no
+    // mesmo ciclo em que o Angular acabou de checa-los.
+    setTimeout(() => {
+      let pes = document.getElementById('pesquisa');
 
-    pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
-    pes ? this.submitted = false : this.submitted = true;
-    !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
+      pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
+      pes ? this.submitted = false : this.submitted = true;
+      !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
 
-    let url = window.location.hash.slice(2);
-    console.log(url);
-    let imprimir: any = document.querySelector('#imprimir');
-    url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
+      let url = window.location.hash.slice(2);
+      console.log(url);
+      let imprimir: any = document.querySelector('#imprimir');
+      url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
+    });
   }
 
   numPedido() {
@@ -130,13 +149,19 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   onEdit(id: any) {
     this.crudService.findById(id).subscribe((data) => {
+      // A revelacao dos slots (product1..product5) NAO acontece mais aqui.
+      // onEdit() roda nesta instancia (o pai, PesquisaComponent/PedidosComponent,
+      // que estende FormularioComponent), mas quem renderiza os campos e
+      // botoes de item e o <app-formulario> FILHO, com seu proprio
+      // slotsVisiveis - mostrarSlot() chamado aqui so mexeria no array desta
+      // instancia, nao no do filho, dessincronizando os dois (bug real
+      // observado). ngOnChanges() abaixo reage a mudanca de pedidosClientes
+      // e roda na instancia que de fato recebe o @Input (o filho).
       this.pedidosClientes = data;
       console.log(this.pedidosClientes)
-      let totais: any = [];
       let pedido: any = Object.entries(data);
       for (let i = 0; i < pedido.length; i++) {
         if(pedido[i][0].includes("total") && pedido[i][1] != null) {
-          totais.push(pedido[i][0]);
           pedido[i][1] = pedido[i][1] + '';
           pedido[i][0] === "total" ? this.pedidosClientes.total = pedido[i][1].replace(".", ",") : null;
           pedido[i][0] === "total1" ? this.pedidosClientes.total1 = pedido[i][1].replace(".", ",") : null;
@@ -150,15 +175,31 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
           this.pedidosClientes.valorFinal = pedido[i][1].replace(".", ",");
         }
       }
-      for (let i=0; i<totais.length;i++) {
-        totais[i] = totais[i].slice(5, 6);
-        if(totais[i] != '') {
-          let classField = '.product' + totais[i];
-          let test = document.querySelector(classField);
-          test?.classList.remove('remove');
-        }
-      }
+      // Sincroniza a propria instancia tambem (cobre o caso de <app-formulario>
+      // ser usado sozinho, sem pai, onde ngOnChanges nao teria uma mudanca de
+      // @Input de fato vinda de fora para reagir).
+      this.sincronizarSlotsVisiveis();
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pedidosClientes']) {
+      this.sincronizarSlotsVisiveis();
+    }
+  }
+
+  // Deriva quais slots (1..5) devem estar visiveis a partir de
+  // pedidosClientes.totalN - chamado tanto por ngOnChanges (quando o @Input
+  // muda, caso do <app-formulario> filho) quanto por onEdit (caso de uso
+  // direto, sem pai).
+  private sincronizarSlotsVisiveis(): void {
+    this.ocultarTodosSlots();
+    if (!this.pedidosClientes) return;
+    for (let n = 1; n <= 5; n++) {
+      if (this.pedidosClientes['total' + n] != null) {
+        this.mostrarSlot(n);
+      }
+    }
   }
 
   onRemove(id: any) {
@@ -263,62 +304,59 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     }
   }
 
+  // Botao global "adicionar": revela o slot seguinte ao maior slot ja
+  // visivel - sempre no final da lista, mesmo que exista um slot vazio no
+  // meio (ex.: item do meio removido antes) - preencher esse buraco em vez
+  // de ir ao final faria o item novo aparecer visualmente entre itens ja
+  // existentes, na posicao fixa do slot no template.
   novoCampo() {
-    if(this.d == 0 && this.arrPedidos.length > 0) {
-      this.pedido = Object.entries(this.pedidosClientes);
-      let result = this.loopForTotais(this.vf, this.pedido)
-      this.d = result.length;
-      this.newCamp(this.d);
-    } else {
-      this.newCamp(this.i);
+    let maiorVisivel = 0;
+    for (let n = 1; n <= 5; n++) {
+      if (this.slotsVisiveis[n - 1]) maiorVisivel = n;
     }
-  }
-
-  removeCampo() {
-    if(this.d > 0 && this.arrPedidos.length > 0) {
-      this.pedido = Object.entries(this.pedidosClientes);
-      let result = this.loopForTotais(this.vf, this.pedido);
-      if(this.i <= 5 && this.i > 0){
-        let t = 'total'+this.i;
-        let q = 'quantidade'+this.i;
-        let d = 'descricao'+this.i;
-        let getT = this.formulario.get(t);
-        let getQ = this.formulario.get(q);
-        let getD = this.formulario.get(d);
-        if(getT?.value !== null || getQ?.value !== null || getD?.value !== null) {
-          getT?.setValue(null);
-          getQ?.setValue('');
-          getD?.setValue('');
-          this.onChange()
-        }
-        this.remCamp(this.i);
-      }
-    } else {
-      this.remCamp(this.i)
-    }
-  }
-
-  newCamp(e: any) {
-    e == 0 ? e = 1 : e = e;
-    this.i = e;
-    this.classField = '.product' + this.i;
-    this.test = document.querySelector(this.classField);
-    this.test?.classList.add('add');
-    this.test?.classList.remove('remove');
-    if(this.i < 5) {
-      this.i++;
-    } else if(this.i == 5){
+    let proximo = maiorVisivel + 1;
+    if (proximo > 5) {
       this._snackBar.open('NÃO SAO PERMITIDOS MAIS CAMPOS!!!', '', {duration: 5000});
+      return;
     }
+    this.mostrarSlot(proximo);
   }
 
-  remCamp(e: any) {
-    let classe = '.product'+this.i;
-    let test = document.querySelector(classe);
-    test?.classList.remove('add');
-    test?.classList.add('remove');
-    if(this.i <= 5 && this.i >= 2) {
-      this.i--;
+  // Botao de excluir de um item especifico (slot n, 1..5) - chamado pelo
+  // proprio bloco do item no template, nao depende de indice compartilhado.
+  removerItem(n: number): void {
+    if (n < 1 || n > 5) return;
+    let getT = this.formulario.get('total' + n);
+    let getQ = this.formulario.get('quantidade' + n);
+    let getD = this.formulario.get('descricao' + n);
+    if (getT?.value !== null || getQ?.value !== null || getD?.value !== null) {
+      getT?.setValue(null);
+      getQ?.setValue('');
+      getD?.setValue('');
+      this.onChange();
+    }
+    this.slotsVisiveis[n - 1] = false;
+    let el = document.querySelector('.product' + n);
+    el?.classList.remove('add');
+    el?.classList.add('remove');
+  }
+
+  mostrarSlot(n: number): void {
+    if (n < 1 || n > 5) return;
+    this.slotsVisiveis[n - 1] = true;
+    let el = document.querySelector('.product' + n);
+    el?.classList.remove('remove');
+    el?.classList.add('add');
+  }
+
+  // So esconde (usado ao trocar de pedido em edicao ou ao resetar o
+  // formulario) - nao limpa valor de campo, quem chama decide se precisa.
+  private ocultarTodosSlots(): void {
+    for (let n = 1; n <= 5; n++) {
+      this.slotsVisiveis[n - 1] = false;
+      let el = document.querySelector('.product' + n);
+      el?.classList.remove('add');
+      el?.classList.add('remove');
     }
   }
 
@@ -483,7 +521,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   override resetar(): void {
     this.submitted = false;
-    for (let i=0; i<5;i++)this.removeCampo();
+    this.ocultarTodosSlots();
     this.formulario.reset();
     this.numPedido();
   }
@@ -536,6 +574,11 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
   private onSuccessEdit() {
     this._snackBar.open('PEDIDO EDITADO COM SUCESSO!!!', '', {duration: 5000});
+    // Quem salva e esta instancia (o <app-formulario> filho), mas quem
+    // renderiza a lista de resultados e o componente pai (PesquisaComponent,
+    // que estende FormularioComponent com seu proprio arrPedidos/formulario
+    // independentes) - emitir para o pai decidir como atualizar a lista dele.
+    this.pedidoEditado.emit();
   }
   private onError() {
     this._snackBar.open('ERRO AO SALVAR PEDIDO!!!', '', {duration: 5000});

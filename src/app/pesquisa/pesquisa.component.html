@@ -45,7 +45,7 @@
             </table>
           </div>
         </div>
-        <app-formulario [pedidosClientes]="pedidosClientes" class="w-100"></app-formulario>
+        <app-formulario [pedidosClientes]="pedidosClientes" (pedidoEditado)="searchPedido()" class="w-100"></app-formulario>
       </form>
     </div>
   </div>

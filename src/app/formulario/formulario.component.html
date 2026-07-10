@@ -209,7 +209,7 @@
       >
       <app-error-msg [control]="$any(formulario).get('quantidade1')" label="Quantidade1"></app-error-msg>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
       <label for="descricao1" class="form-label">Descrição</label>
       <textarea
         type="text"
@@ -246,6 +246,9 @@
         (click)="pesarRetirada($event)"
       >
     </div>
+    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
+      <a (click)="removerItem(1)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+    </div>
   </div>
   <div class="form-group row mb-3 product product2 remove">
     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -261,7 +264,7 @@
       >
       <app-error-msg [control]="$any(formulario).get('quantidade2')" label="Quantidade2"></app-error-msg>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
       <label for="descricao2" class="form-label">Descrição</label>
       <textarea
         class="form-control"
@@ -297,6 +300,9 @@
         (click)="pesarRetirada($event)"
       >
     </div>
+    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
+      <a (click)="removerItem(2)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+    </div>
   </div>
   <div class="form-group row mb-3 product product3 remove">
     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -312,7 +318,7 @@
       >
       <app-error-msg [control]="$any(formulario).get('quantidade3')" label="Quantidade3"></app-error-msg>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
       <label for="descricao3" class="form-label">Descrição</label>
       <textarea
         class="form-control"
@@ -348,6 +354,9 @@
         (click)="pesarRetirada($event)"
       >
     </div>
+    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
+      <a (click)="removerItem(3)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+    </div>
   </div>
   <div class="form-group row mb-3 product product4 remove" >
     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -363,7 +372,7 @@
       >
       <app-error-msg [control]="$any(formulario).get('quantidade4')" label="Quantidade4"></app-error-msg>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
       <label for="descricao4" class="form-label">Descrição</label>
       <textarea
         class="form-control"
@@ -399,6 +408,9 @@
         (click)="pesarRetirada($event)"
       >
     </div>
+    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
+      <a (click)="removerItem(4)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+    </div>
   </div>
   <div class="form-group row mb-3 product product5 remove" >
     <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
@@ -414,7 +426,7 @@
       >
       <app-error-msg [control]="$any(formulario).get('quantidade5')" label="Quantidade5"></app-error-msg>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5 col-xl-5">
+    <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
       <label for="descricao5" class="form-label">Descrição</label>
       <textarea
         type="text"
@@ -453,6 +465,9 @@
         (click)="pesarRetirada($event)"
       >
     </div>
+    <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
+      <a (click)="removerItem(5)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+    </div>
   </div>
   <div class="form-group row justify-content-end mb-3 product" >
     <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6">
@@ -471,7 +486,6 @@
       <div class="colunaHead w-100">Novo Campo</div>
       <div class="actions d-flex justify-content-around align-items-center w-100">
         <a (click)="novoCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon aria-hidden="false" fontIcon="add">add</mat-icon></a>
-        <a (click)="removeCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
       </div>
     </div>
     <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 d-flex flex-column align-items-center justify-content-between">
