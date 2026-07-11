@@ -128,9 +128,12 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
 
   numPedido() {
     // OTIMIZADO: Usa endpoint dedicado que retorna apenas o próximo número
-    this.crudService.getNextPedidoNumber().subscribe((nextNumber: number) => {
-      this.np = nextNumber;
-      this.formulario.get('numberPedido')?.setValue(this.np);
+    this.crudService.getNextPedidoNumber().subscribe({
+      next: (nextNumber: number) => {
+        this.np = nextNumber;
+        this.formulario.get('numberPedido')?.setValue(this.np);
+      },
+      error: () => this._snackBar.open('ERRO AO OBTER NÚMERO DO PEDIDO!!!', '', {duration: 5000})
     });
   }
 
@@ -142,43 +145,49 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       return;
     }
 
-    this.crudService.searchPedidos(query.trim()).subscribe((data: any[]) => {
-      this.arrPedidos = data;
+    this.crudService.searchPedidos(query.trim()).subscribe({
+      next: (data: any[]) => {
+        this.arrPedidos = data;
+      },
+      error: () => this._snackBar.open('ERRO AO PESQUISAR PEDIDOS!!!', '', {duration: 4000})
     });
   }
 
   onEdit(id: any) {
-    this.crudService.findById(id).subscribe((data) => {
-      // A revelacao dos slots (product1..product5) NAO acontece mais aqui.
-      // onEdit() roda nesta instancia (o pai, PesquisaComponent/PedidosComponent,
-      // que estende FormularioComponent), mas quem renderiza os campos e
-      // botoes de item e o <app-formulario> FILHO, com seu proprio
-      // slotsVisiveis - mostrarSlot() chamado aqui so mexeria no array desta
-      // instancia, nao no do filho, dessincronizando os dois (bug real
-      // observado). ngOnChanges() abaixo reage a mudanca de pedidosClientes
-      // e roda na instancia que de fato recebe o @Input (o filho).
-      this.pedidosClientes = data;
-      console.log(this.pedidosClientes)
-      let pedido: any = Object.entries(data);
-      for (let i = 0; i < pedido.length; i++) {
-        if(pedido[i][0].includes("total") && pedido[i][1] != null) {
-          pedido[i][1] = pedido[i][1] + '';
-          pedido[i][0] === "total" ? this.pedidosClientes.total = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total1" ? this.pedidosClientes.total1 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total2" ? this.pedidosClientes.total2 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total3" ? this.pedidosClientes.total3 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total4" ? this.pedidosClientes.total4 = pedido[i][1].replace(".", ",") : null;
-          pedido[i][0] === "total5" ? this.pedidosClientes.total5 = pedido[i][1].replace(".", ",") : null;
+    this.crudService.findById(id).subscribe({
+      next: (data) => {
+        // A revelacao dos slots (product1..product5) NAO acontece mais aqui.
+        // onEdit() roda nesta instancia (o pai, PesquisaComponent/PedidosComponent,
+        // que estende FormularioComponent), mas quem renderiza os campos e
+        // botoes de item e o <app-formulario> FILHO, com seu proprio
+        // slotsVisiveis - mostrarSlot() chamado aqui so mexeria no array desta
+        // instancia, nao no do filho, dessincronizando os dois (bug real
+        // observado). ngOnChanges() abaixo reage a mudanca de pedidosClientes
+        // e roda na instancia que de fato recebe o @Input (o filho).
+        this.pedidosClientes = data;
+        console.log(this.pedidosClientes)
+        let pedido: any = Object.entries(data);
+        for (let i = 0; i < pedido.length; i++) {
+          if(pedido[i][0].includes("total") && pedido[i][1] != null) {
+            pedido[i][1] = pedido[i][1] + '';
+            pedido[i][0] === "total" ? this.pedidosClientes.total = pedido[i][1].replace(".", ",") : null;
+            pedido[i][0] === "total1" ? this.pedidosClientes.total1 = pedido[i][1].replace(".", ",") : null;
+            pedido[i][0] === "total2" ? this.pedidosClientes.total2 = pedido[i][1].replace(".", ",") : null;
+            pedido[i][0] === "total3" ? this.pedidosClientes.total3 = pedido[i][1].replace(".", ",") : null;
+            pedido[i][0] === "total4" ? this.pedidosClientes.total4 = pedido[i][1].replace(".", ",") : null;
+            pedido[i][0] === "total5" ? this.pedidosClientes.total5 = pedido[i][1].replace(".", ",") : null;
+          }
+          if(pedido[i][0] === 'valorFinal') {
+            pedido[i][1] = pedido[i][1] + '';
+            this.pedidosClientes.valorFinal = pedido[i][1].replace(".", ",");
+          }
         }
-        if(pedido[i][0] === 'valorFinal') {
-          pedido[i][1] = pedido[i][1] + '';
-          this.pedidosClientes.valorFinal = pedido[i][1].replace(".", ",");
-        }
-      }
-      // Sincroniza a propria instancia tambem (cobre o caso de <app-formulario>
-      // ser usado sozinho, sem pai, onde ngOnChanges nao teria uma mudanca de
-      // @Input de fato vinda de fora para reagir).
-      this.sincronizarSlotsVisiveis();
+        // Sincroniza a propria instancia tambem (cobre o caso de <app-formulario>
+        // ser usado sozinho, sem pai, onde ngOnChanges nao teria uma mudanca de
+        // @Input de fato vinda de fora para reagir).
+        this.sincronizarSlotsVisiveis();
+      },
+      error: () => this._snackBar.open('ERRO AO CARREGAR PEDIDO!!!', '', {duration: 4000})
     });
   }
 
@@ -203,10 +212,13 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   onRemove(id: any) {
-    this.crudService.remove(id).subscribe(() => {
-      this._snackBar.open('PEDIDO REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
-      this.formulario.get('search');
-      this.searchPedido();
+    this.crudService.remove(id).subscribe({
+      next: () => {
+        this._snackBar.open('PEDIDO REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
+        this.formulario.get('search');
+        this.searchPedido();
+      },
+      error: () => this._snackBar.open('ERRO AO REMOVER PEDIDO!!!', '', {duration: 4000})
     });
   }
 
@@ -217,13 +229,16 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       return;
     }
 
-    this.crudService.searchClientes(cliente.trim()).subscribe((data: any[]) => {
-      if (data && data.length > 0 && this.pedidosClientes.pedidoRegistrado) {
-        const match = data[0]; // Pega o primeiro resultado
-        this.pedidosClientes = match;
-        this.formulario.get('pedidoRegistrado')?.setValue(true);
-        console.log(this.pedidosClientes);
-      }
+    this.crudService.searchClientes(cliente.trim()).subscribe({
+      next: (data: any[]) => {
+        if (data && data.length > 0 && this.pedidosClientes.pedidoRegistrado) {
+          const match = data[0]; // Pega o primeiro resultado
+          this.pedidosClientes = match;
+          this.formulario.get('pedidoRegistrado')?.setValue(true);
+          console.log(this.pedidosClientes);
+        }
+      },
+      error: () => this._snackBar.open('ERRO AO CONSULTAR CLIENTE!!!', '', {duration: 4000})
     });
   }
 

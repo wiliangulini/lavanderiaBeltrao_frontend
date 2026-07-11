@@ -38,25 +38,34 @@ export class EditarComponent implements OnInit {
   searchCliente() {
     this.arrClientes = [];
     let client = this.formulario.get('search')?.value?.toLowerCase();
-    this.crudService.listClient().subscribe((data) =>{
-      data.forEach((e: any) => {
-        let elm = e.cliente.toLowerCase();
-        if(elm.includes(client)) {
-          return this.arrClientes.push(e)
-        }
-      });
+    this.crudService.listClient().subscribe({
+      next: (data) => {
+        data.forEach((e: any) => {
+          let elm = e.cliente.toLowerCase();
+          if(elm.includes(client)) {
+            return this.arrClientes.push(e)
+          }
+        });
+      },
+      error: () => this._snackBar.open('ERRO AO PESQUISAR CLIENTES!!!', '', {duration: 4000})
     })
   }
 
   onEdit(id: any) {
-    this.crudService.findByIdClient(id).subscribe((data: any) => this.clientes = data)
+    this.crudService.findByIdClient(id).subscribe({
+      next: (data: any) => this.clientes = data,
+      error: () => this._snackBar.open('ERRO AO CARREGAR CLIENTE!!!', '', {duration: 4000})
+    })
   }
 
   onRemove(id: any) {
-    this.crudService.removeClient(id).subscribe(() => {
-      this._snackBar.open('CLIENTE REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
-      this.formulario.get('search');
-      this.searchCliente();
+    this.crudService.removeClient(id).subscribe({
+      next: () => {
+        this._snackBar.open('CLIENTE REMOVIDO COM SUCESSO!!!', '', {duration: 4000})
+        this.formulario.get('search');
+        this.searchCliente();
+      },
+      error: () => this._snackBar.open('ERRO AO REMOVER CLIENTE!!!', '', {duration: 4000})
     })
   }
 

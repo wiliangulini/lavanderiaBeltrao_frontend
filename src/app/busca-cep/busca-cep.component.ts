@@ -73,14 +73,16 @@ export class BuscaCepComponent implements OnInit {
     let rua = this.formulario.get('rua')!.value;
 
     if(rua != null && rua !== '') {
-      this.cepService.consultaRUA(rua)?.subscribe((data: any) => {
-
-        data.forEach((data: any) => {
-          this.arrCep.push(data.cep)
-          this.arrBairro.push(data.bairro)
-          this.arrCidade.push(data.localidade)
-          this.arrComp.push(data.complemento)
-        });
+      this.cepService.consultaRUA(rua)?.subscribe({
+        next: (data: any) => {
+          data.forEach((data: any) => {
+            this.arrCep.push(data.cep)
+            this.arrBairro.push(data.bairro)
+            this.arrCidade.push(data.localidade)
+            this.arrComp.push(data.complemento)
+          });
+        },
+        error: (err) => console.error('[ConsultaCEP] Falha ao consultar rua', err)
       })
     }
   }
