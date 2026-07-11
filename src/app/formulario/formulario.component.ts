@@ -413,7 +413,15 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       if(pedidoApiWhats[i][0].includes("pedidoRegistrado") && pedidoApiWhats[i][1] !== null) register.push(pedidoApiWhats[i][1]);
       if(pedidoApiWhats[i][0].includes("pedidoPago") && pedidoApiWhats[i][1] !== null) pag.push(pedidoApiWhats[i][1]);
       if(pedidoApiWhats[i][0].includes("pedidoRetirado") && pedidoApiWhats[i][1] !== null) retirado.push(pedidoApiWhats[i][1]);
-      if(pedidoApiWhats[i][0].includes("retirada") && pedidoApiWhats[i][1] !== null) pesagem.push(pedidoApiWhats[i][1]);
+      // pesagem precisa ficar alinhado por slot com ds/totais (que sao
+      // filtrados pela presenca de descricaoN) - filtrar aqui pela nulidade
+      // do proprio retiradaN desalinha os arrays quando o item existe mas o
+      // checkbox nunca foi tocado (retiradaN=null), fazendo o aviso de
+      // pesagem sumir ou aparecer no item errado mais adiante.
+      if(pedidoApiWhats[i][0].includes("retirada")) {
+        const sufixoItem = pedidoApiWhats[i][0].replace("retirada", "");
+        if(pedido["descricao" + sufixoItem] !== null) pesagem.push(pedidoApiWhats[i][1]);
+      }
       if(pedidoApiWhats[i][0].includes("entrega_estimada") && pedidoApiWhats[i][1] !== null) entrega_estimada.push(pedidoApiWhats[i][1]);
     }
 
@@ -477,7 +485,12 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
       if(pedidoImpresso[i][0].includes("pedidoRegistrado") && pedidoImpresso[i][1] !== null) register.push(pedidoImpresso[i][1]);
       if(pedidoImpresso[i][0].includes("pedidoPago") && pedidoImpresso[i][1] !== null) pag.push(pedidoImpresso[i][1]);
       if(pedidoImpresso[i][0].includes("pedidoRetirado") && pedidoImpresso[i][1] !== null) retirado.push(pedidoImpresso[i][1]);
-      if(pedidoImpresso[i][0].includes("retirada") && pedidoImpresso[i][1] !== null) pesagem.push(pedidoImpresso[i][1]);
+      // ver comentario equivalente em enviarPedidoCliente() - mesmo bug,
+      // mesma correcao (pesagem alinhado por slot via descricaoN).
+      if(pedidoImpresso[i][0].includes("retirada")) {
+        const sufixoItem = pedidoImpresso[i][0].replace("retirada", "");
+        if(pedido["descricao" + sufixoItem] !== null) pesagem.push(pedidoImpresso[i][1]);
+      }
       if(pedidoImpresso[i][0].includes("entrega_estimada") && pedidoImpresso[i][1] !== null) entrega_estimada.push(pedidoImpresso[i][1]);
     }
 
