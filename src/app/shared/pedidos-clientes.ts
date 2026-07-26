@@ -1,7 +1,9 @@
 export interface PedidosClientes {
   id: number;
   data: string;
-  numberPedido: string | number; // contrato: String; endpoint next-number retorna number
+  numberPedido: string | number; // contrato: String; pedidos novos = "yyyyMMdd-NNN" (ADR 0007), gerado so no POST; legado preserva o numero antigo
+  dataOperacional?: string; // ADR 0007: auxiliar, ISO "yyyy-MM-dd"; ausente em pedidos legados
+  sequenciaDiaria?: number; // ADR 0007: auxiliar; ausente em pedidos legados
   cliente: string;
   telefone: string;
   cep: string;

@@ -79,13 +79,6 @@ export class DataCrudService {
     return this.http.delete(`${this.clientesAPI}/${id}`).pipe(first());
   }
 
-  // NOVO: Método otimizado para obter próximo número de pedido
-  getNextPedidoNumber(): Observable<number> {
-    return this.http.get<number>(`${this.pedidosAPI}/next-number`).pipe(
-      take(1)
-    );
-  }
-
   // NOVO: Método de busca de pedidos com filtro server-side
   searchPedidos(query: string): Observable<PedidosClientes[]> {
     return this.http.get<PedidosClientes[]>(`${this.pedidosAPI}/search`, {

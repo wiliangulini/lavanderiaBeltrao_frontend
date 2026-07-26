@@ -57,7 +57,7 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     this.formulario = this.fb.group({
       search: [],
       data: [null, [Validators.required]],
-      numberPedido: [null, [Validators.required]],
+      numberPedido: [null], // ADR 0007: gerado so no POST, sem previsao client-side
       cliente: [null, [Validators.required]],
       telefone: [null, [Validators.required]],
       cep: [],
@@ -113,28 +113,45 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
     // mudam valores lidos no template (via formControlName/ngModel) no
     // mesmo ciclo em que o Angular acabou de checa-los.
     setTimeout(() => {
-      let pes = document.getElementById('pesquisa');
-
-      pes ? this.formulario.get('numberPedido')?.setValue('') : this.numPedido();
-      pes ? this.submitted = false : this.submitted = true;
-      !pes ? this.formulario.get('pedidoRegistrado')?.setValue(true) : this.formulario.get('pedidoRegistrado')?.setValue(false);
-
-      let url = window.location.hash.slice(2);
-      console.log(url);
-      let imprimir: any = document.querySelector('#imprimir');
-      url === 'registrar-pedido' ? imprimir.classList.add('d-none') : imprimir.classList.remove('d-none') ;
+      this.aplicarEstadoInicial();
     });
   }
 
-  numPedido() {
-    // OTIMIZADO: Usa endpoint dedicado que retorna apenas o próximo número
-    this.crudService.getNextPedidoNumber().subscribe({
-      next: (nextNumber: number) => {
-        this.np = nextNumber;
-        this.formulario.get('numberPedido')?.setValue(this.np);
-      },
-      error: () => this._snackBar.open('ERRO AO OBTER NÚMERO DO PEDIDO!!!', '', {duration: 5000})
-    });
+  // Estado inicial do form, dependendo do contexto (registrar-pedido vs.
+  // pesquisa/edicao) - mesmo criterio usado desde sempre (presenca do
+  // #pesquisa no DOM). Reutilizado por ngAfterViewInit() (1a carga) e por
+  // resetar() (Cancelar, ou apos salvar em contexto de edicao), para nao
+  // duplicar a logica em dois lugares.
+  // ADR 0007: numberPedido nao e mais pre-buscado (next-number saiu do
+  // fluxo) - o campo comeca vazio e so recebe valor com a resposta do POST
+  // (ver submit()).
+  private aplicarEstadoInicial(): void {
+    let pes = document.getElementById('pesquisa');
+
+    this.formulario.get('numberPedido')?.setValue('');
+    this.submitted = !pes;
+    this.formulario.get('pedidoRegistrado')?.setValue(!pes);
+
+    let url = window.location.hash.slice(2);
+    url === 'registrar-pedido' ? this.ocultarAcoesPedidoCriado() : this.mostrarAcoesPedidoCriado();
+  }
+
+  // Imprimir/WhatsApp: ocultos ao abrir registrar-pedido (nao ha pedido
+  // persistido ainda); revelados so apos o POST devolver o numero
+  // definitivo (submit()), para nunca imprimir/enviar uma previsao (R3).
+  // Na tela de pesquisa/edicao ficam sempre visiveis (o pedido ja existe).
+  private mostrarAcoesPedidoCriado(): void {
+    let imprimir: any = document.querySelector('#imprimir');
+    imprimir?.classList.remove('d-none');
+    let whats: any = document.querySelector('.btn-whats');
+    if (whats) whats.style.display = '';
+  }
+
+  private ocultarAcoesPedidoCriado(): void {
+    let imprimir: any = document.querySelector('#imprimir');
+    imprimir?.classList.add('d-none');
+    let whats: any = document.querySelector('.btn-whats');
+    if (whats) whats.style.display = 'none';
   }
 
   searchPedido() {
@@ -548,10 +565,9 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   override resetar(): void {
-    this.submitted = false;
     this.ocultarTodosSlots();
     this.formulario.reset();
-    this.numPedido();
+    this.aplicarEstadoInicial();
   }
 
   onBeforeSave(): void {
@@ -573,32 +589,35 @@ export class FormularioComponent extends FormCadastroComponent implements OnInit
   }
 
   submit() {
-    console.log(this.pedidosClientes)
     this.onBeforeSave();
-    let save: any = document.querySelector('#salvar');
-    let imp: any = document.querySelector('#imprimir');
-
 
     if(this.formulario.valid) {
       this.crudService.save(this.pedidosClientes).subscribe({
-        next: () => {
-          this.submitted ? this.onSuccess() : this.onSuccessEdit();
+        next: (resposta: any) => {
+          if (this.submitted) {
+            // Criacao (registrar-pedido): adota o numero definitivo devolvido
+            // pelo POST (nunca a previsao - corrige R3/ADR 0007) e mantem o
+            // pedido na tela para imprimir/enviar por whatsapp com esse
+            // numero. Sem auto-reset: o operador usa "Cancelar" para iniciar
+            // o proximo pedido.
+            this.pedidosClientes = resposta;
+            this.formulario.get('numberPedido')?.setValue(resposta.numberPedido);
+            this.mostrarAcoesPedidoCriado();
+            this.onSuccess(resposta);
+          } else {
+            this.onSuccessEdit();
+            this.resetar();
+          }
         },
-        error: () => {
-          this.onError()
-        },
-        complete: () => {
-          this.resetar();
-          this.numPedido();
-        }
+        error: () => this.onError()
       })
     } else {
       this._snackBar.open('FORMULARIO INVALIDO!!!', '', {duration: 5000})
     }
   }
 
-  private onSuccess() {
-    this._snackBar.open('PEDIDO SALVO COM SUCESSO!!!', '', {duration: 5000});
+  private onSuccess(pedido: any) {
+    this._snackBar.open('PEDIDO SALVO COM SUCESSO! Nº ' + pedido.numberPedido, '', {duration: 5000});
   }
   private onSuccessEdit() {
     this._snackBar.open('PEDIDO EDITADO COM SUCESSO!!!', '', {duration: 5000});
