@@ -1,3 +1,12 @@
+---
+paths:
+  - "package.json"
+  - "angular.json"
+  - "tsconfig*.json"
+  - "src/main.ts"
+  - "src/app/app.module.ts"
+---
+
 # Rule — Stack frontend (Angular 14)
 
 Use quando a tarefa mexer na estrutura do frontend.

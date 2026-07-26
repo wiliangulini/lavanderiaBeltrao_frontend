@@ -110,7 +110,7 @@ Após alterar: `npm run build` (compila/produção) e/ou `npm test` (Karma/Jasmi
 
 ## 12. Economia de tokens
 
-Não repita este arquivo nos demais. Não cole `package-lock.json`/`node_modules` nem arquivos inteiros sem necessidade. Leia rules por domínio sob demanda.
+Não repita este arquivo nos demais. Não cole `package-lock.json`/`node_modules` nem arquivos inteiros sem necessidade. As rules em `.claude/rules/` têm `paths:` no frontmatter e carregam sozinhas quando um arquivo correspondente é lido — só `seguranca-frontend.md` carrega sempre.
 
 ## 13. Relatório final obrigatório
 

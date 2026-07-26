@@ -1,3 +1,9 @@
+---
+paths:
+  - "src/**/*.scss"
+  - "src/**/*.html"
+---
+
 # Rule — UI/UX (Bootstrap 5 + Angular Material 14)
 
 Use para telas, componentes visuais, responsividade e acessibilidade.

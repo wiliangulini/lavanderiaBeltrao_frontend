@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/app/**/*.{ts,html}"
+---
+
 # Rule — Componentes, serviços e módulos Angular
 
 Use ao criar/alterar componentes, serviços, rotas ou o módulo.
