@@ -5,7 +5,10 @@ Use para chamadas HTTP, URLs, environments e proxy. O contrato precisa casar com
 ## Fatos
 - `DataCrudService` monta URL absoluta: `environment.backend.baseUrl` + `environment.API` (`api/`) + recurso.
   - dev `http://localhost:8080/api/...`; prod `http://lavanderiabeltrao.com.br:8080/api/...`.
-- Endpoints: `pedidos`(+`/{id}`,`/next-number`,`/search?query`), `clientes`(+`/{id}`,`/search?query`).
+- Endpoints: `pedidos`(+`/{id}`,`/search?query`), `clientes`(+`/{id}`,`/search?query`).
+- **`pedidos/next-number` foi removida (ADR 0007, Gate D)** — não existe mais no backend nem tem
+  consumidor no frontend. `numberPedido` (`yyyyMMdd-NNN` para pedidos novos) é gerado no servidor
+  dentro do `POST /pedidos` e adotado da resposta; não pré-buscar nem calcular no cliente.
 - `proxy.conf.js`: `/api` → `http://lavanderiabeltrao.com.br:8080/`. Como o service usa baseUrl absoluta, o proxy **praticamente não é exercido** hoje — não assumir o contrário sem verificar.
 - Backend (`CorsConfig`) libera `http://localhost:4200` e os domínios de produção; `allowCredentials(true)`.
 

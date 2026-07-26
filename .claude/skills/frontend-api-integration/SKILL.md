@@ -10,7 +10,8 @@ Metodologia para integração segura com o backend `/api/*`.
 ## Contexto real
 - `DataCrudService` centraliza o CRUD; monta URL absoluta com `environment.backend.baseUrl` + `environment.API` (`api/`).
 - dev `http://localhost:8080/api/...`; prod `http://lavanderiabeltrao.com.br:8080/api/...`.
-- Endpoints: `pedidos`(+`/{id}`,`/next-number`,`/search?query`), `clientes`(+`/{id}`,`/search?query`).
+- Endpoints: `pedidos`(+`/{id}`,`/search?query`), `clientes`(+`/{id}`,`/search?query`).
+- `pedidos/next-number` foi removida (ADR 0007, Gate D) — `numberPedido` (`yyyyMMdd-NNN` para pedidos novos) é gerado no servidor dentro do `POST` e adotado da resposta, nunca pré-buscado.
 - `proxy.conf.js` (`/api` → domínio:8080) existe, mas o service usa baseUrl absoluta (proxy subutilizado).
 
 ## Método

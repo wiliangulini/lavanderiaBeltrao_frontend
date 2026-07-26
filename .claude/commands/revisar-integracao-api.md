@@ -9,7 +9,8 @@ Use para revisar a comunicação com o backend Spring. Rule base: `integracao-ap
 ## Contexto real
 - `DataCrudService` monta URL absoluta: `environment.backend.baseUrl` + `environment.API` (`api/`) + recurso.
   - dev: `http://localhost:8080/api/...`; prod: `http://lavanderiabeltrao.com.br:8080/api/...`.
-- Endpoints usados: `pedidos`, `pedidos/{id}`, `pedidos/next-number`, `pedidos/search?query`, `clientes`, `clientes/{id}`, `clientes/search?query`.
+- Endpoints usados: `pedidos`, `pedidos/{id}`, `pedidos/search?query`, `clientes`, `clientes/{id}`, `clientes/search?query`.
+- `pedidos/next-number` foi removida (ADR 0007, Gate D) — sem consumidor desde então; `numberPedido` vem do corpo da resposta do `POST /pedidos`.
 - `proxy.conf.js` mapeia `/api` → `lavanderiabeltrao.com.br:8080`, mas o service usa baseUrl absoluta (proxy subutilizado).
 
 ## Verificar

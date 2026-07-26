@@ -5,7 +5,11 @@ Use ao mexer nas telas de pedido/cliente ou na impressão de recibos.
 ## Domínio real (confirmado)
 - Telas: `registrar-pedido` (PedidosComponent), `pesquisar-pedido` (PesquisaComponent), `cadastrar-clientes` (CadastroComponent), `editar-clientes` (EditarComponent), `buscar-cep` (BuscaCepComponent).
 - Pedido tem cabeçalho + até 6 itens (`quantidade`/`descricao`/`total`/`retirada` e variantes `1..5`), `valorFinal` e flags `pedidoRegistrado`/`pedidoPago`/`pedidoRetirado` — espelho do backend.
-- Numeração via `GET /api/pedidos/next-number`. Busca via `/search?query`.
+- Numeração diária atômica gerada no servidor dentro do `POST /api/pedidos` (ADR 0007): código
+  público `yyyyMMdd-NNN`, reinicia a cada dia. `GET /api/pedidos/next-number` foi removida (Gate
+  D) — o formulário não pré-busca mais número; adota o valor retornado pelo `POST` e só então
+  revela Imprimir/WhatsApp. Legado (antes da migração) mantém o número sequencial antigo. Busca
+  via `/search?query`.
 - CEP via `ConsultaCepService` (ViaCEP; cidade Francisco Beltrão/PR). Impressão via `print-js`.
 
 ## Regras
