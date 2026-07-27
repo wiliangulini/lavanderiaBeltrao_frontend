@@ -10,7 +10,7 @@ Use ao mexer nas telas de pedido/cliente ou na impressão de recibos.
 
 ## Domínio real (confirmado)
 - Telas: `registrar-pedido` (PedidosComponent), `pesquisar-pedido` (PesquisaComponent), `cadastrar-clientes` (CadastroComponent), `editar-clientes` (EditarComponent), `buscar-cep` (BuscaCepComponent).
-- Pedido tem cabeçalho + até 6 itens (`quantidade`/`descricao`/`total`/`retirada` e variantes `1..5`), `valorFinal` e flags `pedidoRegistrado`/`pedidoPago`/`pedidoRetirado` — espelha o **contrato JSON** do backend (`PedidosResponseDTO`/`PedidosRequestDTO`). No backend os itens são armazenados normalizados (`pedido_itens`) e o DTO achata para esses mesmos 6 slots; `valorFinal` é calculado no servidor a partir dos itens — o frontend não recalcula, só exibe.
+- Pedido tem cabeçalho + até 6 itens (`quantidade`/`descricao`/`total`/`retirada` e variantes `1..5`), `valorFinal` e flags `pedidoRegistrado`/`pedidoPago`/`pedidoRetirado` — espelha o **contrato JSON** do backend (`PedidosResponseDTO`/`PedidosRequestDTO`). No backend os itens são armazenados normalizados (`pedido_itens`) e o DTO achata para esses mesmos 6 slots; `valorFinal` é calculado de forma autoritativa no servidor a partir dos itens. O frontend (`onChange()` em `formulario.component.ts`) soma os `total*` no cliente e escreve uma **prévia** local em `valorFinal` só para UX durante o preenchimento — essa prévia nunca é fonte de verdade; o valor exibido após o `POST`/consulta é sempre o retornado pelo backend.
 - Numeração diária atômica gerada no servidor dentro do `POST /api/pedidos` (ADR 0007): código
   público `yyyyMMdd-NNN`, reinicia a cada dia. `GET /api/pedidos/next-number` foi removida (Gate
   D) — o formulário não pré-busca mais número; adota o valor retornado pelo `POST` e só então

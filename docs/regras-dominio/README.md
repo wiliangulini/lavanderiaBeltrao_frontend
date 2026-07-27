@@ -4,7 +4,7 @@ Documentos longos de domínio que não cabem em `PROJECT_RULES.md`. Lidos sob de
 Não devem contradizer `PROJECT_RULES.md` nem as rules em `.claude/rules/`.
 
 ## Domínio confirmado (resumo)
-- **Registrar pedido** (`PedidosComponent`): cabeçalho + até 6 itens (`quantidade`/`descricao`/`total`/`retirada` + `1..5`), `valorFinal`, flags de status. Numeração via `/api/pedidos/next-number`.
+- **Registrar pedido** (`PedidosComponent`): cabeçalho + até 6 itens (`quantidade`/`descricao`/`total`/`retirada` + `1..5`), `valorFinal`, flags de status. Numeração diária (`yyyyMMdd-NNN`) gerada no servidor dentro do `POST /api/pedidos` (ADR 0007); `GET /api/pedidos/next-number` foi removida (Gate D).
 - **Pesquisar pedido** (`PesquisaComponent`): busca via `/api/pedidos/search?query`.
 - **Cadastrar/editar clientes** (`CadastroComponent`/`EditarComponent`): CRUD via `/api/clientes`.
 - **Buscar CEP** (`BuscaCepComponent` + `ConsultaCepService`): ViaCEP, cidade Francisco Beltrão/PR.

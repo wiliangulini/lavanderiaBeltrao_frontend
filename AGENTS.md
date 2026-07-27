@@ -23,6 +23,7 @@ Não leia `package-lock.json`, `node_modules` ou relatórios antigos sem necessi
 | `.claude/rules/` | Regras acionáveis por domínio. |
 | `.claude/commands/` | Entrypoints de tarefas recorrentes. |
 | `.claude/skills/` | Métodos reutilizáveis. |
+| `.claude/agents/` | Agentes read-only (Read/Grep/Glob) usados pela auditoria integral — ver `/auditar-ux-ui`. |
 | `.codex/instructions.md` | Matriz de risco e protocolo do Codex. |
 | `docs/ia-auditorias/` | Continuidade/handoff; não é fonte de verdade. |
 
@@ -33,6 +34,11 @@ Não leia `package-lock.json`, `node_modules` ou relatórios antigos sem necessi
 - **Rule**: domínio sensível (stack Angular, componentes/serviços, UI Bootstrap/Material, integração/proxy, segurança, fluxo de pedidos, raciocínio/decisão arquitetural). As rules em `.claude/rules/` valem para Claude Code e Codex — mesmo critério para os dois.
 
 Pares command↔skill (`create-code`↔`senior-code-agent`, `implementation-plan`↔`implementation-planning`, `architecture-decision`↔`architecture-review`): command é a entrada, skill é o método; não repita conteúdo.
+
+### Revisão pontual vs auditoria integral
+
+- **Revisão pontual** (`/revisar-ui-angular`, `/revisar-integracao-api`): achados ad hoc de uma tela/fluxo específico, sem múltiplos agentes; use durante uma tarefa comum, sem pedido explícito extra.
+- **Auditoria integral** (`/auditar-ux-ui`): cobertura completa de todas as telas — estática + runtime + 3 agentes paralelos (`.claude/agents/`) + validação independente. Invocação exclusivamente manual, sessão dedicada, mais cara em tempo/tokens — não disparar durante uma tarefa comum, só sob pedido explícito do usuário.
 
 ## 4. Antes de qualquer edição
 

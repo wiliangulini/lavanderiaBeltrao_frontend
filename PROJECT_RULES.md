@@ -73,10 +73,12 @@ Não devem: reescrever o app; trocar/atualizar Angular ou libs de UI; alterar `e
 | Área | Onde | Regra |
 |---|---|---|
 | Integração com a API | `shared/services/data-crud.service.ts`, `environment*.ts` | Contrato deve casar com o backend (`/api/clientes`, `/api/pedidos`). Ver `.claude/rules/integracao-api-proxy.md`. |
-| Environments | `src/environments/environment.ts` / `.prod.ts` | URLs e config Firebase. Não expor/alterar sem autorização. |
+| Environments | `src/environments/environment.ts` / `.prod.ts` | URLs de API (`backend.baseUrl`, `API`). Não expor/alterar sem autorização. Não há config Firebase aqui — ver rodapé desta seção. |
 | Deploy | `firebase.json`, `.firebaserc`, `Dockerfile`, `docker-compose.yml` | Não executar deploy. |
 | Valores financeiros | formulário de pedido (`total*`, `valorFinal`) | Cálculos/máscaras sensíveis; validar antes de mudar. |
 | Proxy | `proxy.conf.js` | `/api → lavanderiabeltrao.com.br:8080`. Ver §7. |
+
+Firebase real: `firebase.json`/`.firebaserc` configuram só **Hosting/deploy** (`lavanderia-e5a18`). `@angular/fire` está no `package.json` mas hoje não há `AngularFireModule`/`firebaseConfig`/`initializeApp` em nenhum módulo do app — dependência instalada e não usada. Não assumir Firebase Auth/Firestore/etc. sem confirmar no código.
 
 ## 7. Integração com o backend
 
@@ -85,7 +87,7 @@ Não devem: reescrever o app; trocar/atualizar Angular ou libs de UI; alterar `e
   - dev: `http://localhost:8080/api/...`
   - prod: `http://lavanderiabeltrao.com.br:8080/api/...`
 - Existe `proxy.conf.js` (`/api` → `http://lavanderiabeltrao.com.br:8080/`), mas como o service usa baseUrl **absoluta**, o proxy praticamente não é exercido hoje. Não assumir que chamadas passam pelo proxy sem verificar.
-- Nomes de campos JSON devem casar com as entidades do backend (`numberPedido`, `valorFinal`, `entrega_estimada`, etc.). Mudar nome quebra a integração.
+- Nomes de campos JSON devem casar com os **DTOs** do backend (`PedidosResponseDTO`/`ClientResponseDTO` em `dto/`, não com as entidades JPA em `model/`) — `numberPedido`, `valorFinal`, `entrega_estimada`, etc. Mudar nome quebra a integração.
 
 ## 8. Menor mudança suficiente
 
