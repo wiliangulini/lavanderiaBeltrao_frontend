@@ -19,7 +19,7 @@ Agente sênior de planejamento, implementação controlada, revisão, auditoria,
 
 ## 4. Skills (`.claude/skills/`)
 
-`senior-code-agent`, `senior-code-review`, `safe-refactor`, `implementation-planning`, `architecture-review`, `angular-maintenance`, `frontend-api-integration`. Não invoque command e skill equivalentes ao mesmo tempo sem necessidade.
+`senior-code-agent`, `senior-code-review`, `safe-refactor`, `implementation-planning`, `architecture-review`, `angular-maintenance`, `frontend-api-integration`, `auditar-ux-ui` (auditoria integral, invocação manual — ver `AGENTS.md`). Não invoque command e skill equivalentes ao mesmo tempo sem necessidade.
 
 ## 5. Rules (`.claude/rules/`)
 
@@ -27,7 +27,7 @@ Sob demanda: `stack-frontend-angular`, `angular-components-services`, `ui-ux-boo
 
 ## 6. Segurança (reforço)
 
-Não exponha/altere `environment*.ts` (URLs e config Firebase) sem autorização. Não execute deploy (Firebase/Docker), push, reset, clean, rm ou sudo sem autorização explícita. Não confie apenas em validação client-side para dados críticos.
+Não exponha/altere `environment*.ts` (URLs de API) sem autorização. Config Firebase real é de Hosting/deploy (`firebase.json`, `.firebaserc`) — `@angular/fire` está no `package.json` mas não há `AngularFireModule`/`firebaseConfig` no app hoje; não confundir com `environment*.ts`. Não execute deploy (Firebase/Docker), push, reset, clean, rm ou sudo sem autorização explícita. Não confie apenas em validação client-side para dados críticos.
 
 ## 7. Relatório final
 

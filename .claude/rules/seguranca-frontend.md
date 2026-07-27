@@ -3,7 +3,8 @@
 Use sempre que a tarefa tocar environments, deploy, dados de clientes ou dependências.
 
 ## Fatos
-- Config Firebase e URLs ficam em `environment.ts` / `environment.prod.ts` (substituídos no build de produção).
+- URLs de API ficam em `environment.ts` / `environment.prod.ts` (substituídos no build de produção). Não há config Firebase nesses arquivos.
+- Firebase real é só de Hosting/deploy (`firebase.json`, `.firebaserc`, projeto `lavanderia-e5a18`). `@angular/fire` está no `package.json` mas hoje não há `AngularFireModule`/`firebaseConfig`/`initializeApp` em nenhum módulo do app — dependência instalada e não usada.
 - Deploy via Firebase Hosting (`firebase.json`, `.firebaserc`) e artefatos Docker (`Dockerfile`, `docker-compose.yml`).
 - Não há login/autenticação: a SPA é de uso interno.
 - Trafega dados reais de clientes (nome, telefone, endereço) e pedidos.

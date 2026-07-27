@@ -1,9 +1,10 @@
 <form class="was-validated container p-0 ml-0 mt-0 mr-0 mb-5" novalidate [formGroup]="formulario" (ngSubmit)="onSubmit()">
   <div class="form-group row mb-3">
     <div class="col-sm-7 col-md-7 col-lg-7 col-xl-7">
-      <label class="form-label">Cliente</label>
+      <label for="cliente" class="form-label">Cliente</label>
       <input
         required
+        id="cliente"
         type="text"
         class="form-control"
         placeholder="Cliente"
@@ -248,7 +249,7 @@
       >
     </div>
     <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
-      <a (click)="removerItem(1)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+      <button type="button" (click)="removerItem(1)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></button>
     </div>
   </div>
   <div class="form-group row mb-3 product product2 remove">
@@ -302,7 +303,7 @@
       >
     </div>
     <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
-      <a (click)="removerItem(2)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+      <button type="button" (click)="removerItem(2)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></button>
     </div>
   </div>
   <div class="form-group row mb-3 product product3 remove">
@@ -356,7 +357,7 @@
       >
     </div>
     <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
-      <a (click)="removerItem(3)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+      <button type="button" (click)="removerItem(3)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></button>
     </div>
   </div>
   <div class="form-group row mb-3 product product4 remove" >
@@ -410,7 +411,7 @@
       >
     </div>
     <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
-      <a (click)="removerItem(4)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+      <button type="button" (click)="removerItem(4)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></button>
     </div>
   </div>
   <div class="form-group row mb-3 product product5 remove" >
@@ -467,7 +468,7 @@
       >
     </div>
     <div class="col-sm-1 col-md-1 col-lg-1 col-xl-1 d-flex align-items-end justify-content-center">
-      <a (click)="removerItem(5)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></a>
+      <button type="button" (click)="removerItem(5)" class="btn btn-primary d-flex align-items-center justify-content-center" title="Excluir item"><mat-icon aria-hidden="false" fontIcon="delete">delete</mat-icon></button>
     </div>
   </div>
   <div class="form-group row justify-content-end mb-3 product" >
@@ -486,7 +487,7 @@
     <div class="miniTable col-sm-2 col-md-2 col-lg-2 col-xl-2">
       <div class="colunaHead w-100">Novo Campo</div>
       <div class="actions d-flex justify-content-around align-items-center w-100">
-        <a (click)="novoCampo()" class="btn btn-primary d-flex align-items-center justify-content-center"><mat-icon aria-hidden="false" fontIcon="add">add</mat-icon></a>
+        <button type="button" (click)="novoCampo()" class="btn btn-primary d-flex align-items-center justify-content-center" title="Novo Campo"><mat-icon aria-hidden="false" fontIcon="add">add</mat-icon></button>
       </div>
     </div>
     <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 d-flex flex-column align-items-center justify-content-between">
@@ -535,7 +536,7 @@
     <button class="btn btn-primary" id="salvar" type="submit" >Salvar</button>
     <button (click)="resetar()" class="btn btn-secondary ms-3">Cancelar</button>
     <button (click)="imprimir(pedidosClientes)" id="imprimir" type="button" class="btn btn-danger ms-3">Imprimir</button>
-    <a class="btn ms-3 btn-whats" target="_blank" (click)="enviarPedidoCliente(pedidosClientes)" ><svg fill="#FFF" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg></a>
+    <button type="button" class="btn ms-3 btn-whats" (click)="enviarPedidoCliente(pedidosClientes)" aria-label="Enviar pedido por WhatsApp"><svg aria-hidden="true" fill="#FFF" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"></path></svg></button>
     <textarea id="printJS-form" type="textarea" class="d-none" formControlName="textarea" [(ngModel)]="this.msg" ></textarea>
   </div>
 </form>

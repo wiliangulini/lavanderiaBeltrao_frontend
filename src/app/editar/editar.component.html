@@ -2,8 +2,8 @@
   <form class="was-validated container" novalidate [formGroup]="formulario">
     <div class="row w-100 justify-content-between mt-5 mb-3">
       <div class="col-sm-9 col-md-9 col-lg-9 col-xl-9">
-        <label for="cliente" class="form-label">Pesquisar Cliente</label>
-        <input id="pesquisa" class="form-control" type="search" formControlName="search" placeholder="Pesquisar Cliente" aria-label="Search">
+        <label for="pesquisa" class="form-label">Pesquisar Cliente</label>
+        <input id="pesquisa" class="form-control" type="search" formControlName="search" placeholder="Pesquisar Cliente">
       </div>
       <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3 d-flex align-items-end">
         <button class="btn btn-outline-success w-100 d-flex justify-content-center align-items-center" (click)="searchCliente()">Pesquisar Cliente<mat-icon class="ms-2">search</mat-icon></button>
@@ -32,10 +32,10 @@
               {{ cliente.bairro }}
             </td>
             <td>
-              <a class="btn btn-primary w-100" (click)="onEdit(cliente.id)">Editar</a>
+              <button type="button" class="btn btn-primary w-100" (click)="onEdit(cliente.id)">Editar</button>
             </td>
             <td>
-              <a class="btn btn-primary w-100" (click)="onRemove(cliente.id)">Deletar</a>
+              <button type="button" class="btn btn-primary w-100" (click)="onRemove(cliente.id)">Deletar</button>
             </td>
           </tr>
         </tbody>

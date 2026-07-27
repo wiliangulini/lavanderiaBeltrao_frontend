@@ -1,3 +1,8 @@
+---
+paths:
+  - "src/**/*.ts"
+---
+
 # Rule — Raciocínio sênior e decisão arquitetural
 
 Use antes de tocar em código sempre que a tarefa não for um ajuste trivial e óbvio: ao avaliar
