@@ -72,3 +72,9 @@ ul li.active::before {
 ul li:hover::before {
   width: 95% !important;
 }
+@media (max-width: 991.98px) {
+  ul li,
+  ul li.cep {
+    width: 100%;
+  }
+}

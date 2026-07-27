@@ -1,7 +1,8 @@
 .actions.d-flex.justify-content-center {
   padding: 0 .5rem;
 }
-.miniTable .actions.d-flex.justify-content-around a {
+.miniTable .actions.d-flex.justify-content-around a,
+.miniTable .actions.d-flex.justify-content-around button {
   height: 50px;
   width: 50px;
   border-radius: 50%;

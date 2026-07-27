@@ -38,6 +38,6 @@ export class FormValidations {
       'cepInvalido': 'CEP Inválido.',
     }
 
-    return config[validatorName];
+    return config[validatorName] ?? `${fieldName} inválido.`;
   }
 }
