@@ -1,27 +1,50 @@
-# Lavanderia
+# Lavanderia Beltrão
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+Sistema administrativo para cadastro e gerenciamento de clientes e pedidos de uma lavanderia real, em uso na operação do cliente.
 
-## Development server
+## Funcionalidades
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Cadastro e edição de clientes, com busca automática de endereço por CEP
+- Gestão de pedidos vinculados a clientes
+- Pesquisa e consulta de cadastros e pedidos
+- Formulários com validação
 
-## Code scaffolding
+## Stack
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Angular 14 · Angular Material · Bootstrap 5 · RxJS
 
-## Build
+## Arquitetura
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```
+src/app/
+  cadastro/          cadastro de clientes
+  form-cliente/       formulário de cliente
+  form-cadastro/      formulário de cadastro
+  pedidos/             gestão de pedidos
+  pesquisa/             busca e consulta
+  busca-cep/            integração com API de CEP
+  editar/                edição de registros
+```
 
-## Running unit tests
+O backend (Java/Spring Boot) deste sistema é mantido em repositório privado, por conter dados operacionais do cliente.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Instalação
 
-## Running end-to-end tests
+```bash
+git clone https://github.com/wiliangulini/lavanderiaBeltrao_frontend.git
+cd lavanderiaBeltrao_frontend
+npm install
+ng serve
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Comandos
 
-## Further help
+```bash
+ng serve      # ambiente de desenvolvimento
+ng build       # build de produção
+ng test         # testes unitários (Karma/Jasmine)
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Contexto
+
+Projeto profissional para cliente real, em manutenção e evolução contínua conforme demanda. Integra com um backend em Java/Spring Boot e MySQL, hospedado em VPS própria.
